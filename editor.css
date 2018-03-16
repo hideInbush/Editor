@@ -1,0 +1,386 @@
+a{
+    cursor: pointer;
+}
+ul,li,input{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.labelCursor{
+    cursor: pointer;
+}
+
+.editor{
+    width: 100%;
+    background-color: #e8e8e8;
+    overflow: hidden;
+    margin: 0;
+}
+
+.editor .editor-header{
+    height: 38px;
+    width: 100%;
+    position: absolute;
+    background-image: linear-gradient(90deg, #00c4cd 0%, #6458aa 100%);
+    z-index: 9;
+    opacity: 0.8;
+    font-size: 14px;
+    color: #fff;
+}
+.editor .editor-header .title{
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    width: 240px;
+    transform: translateX(-50%);
+    line-height: 38px;
+    text-align: center;
+}
+.editor .editor-header .right{
+    right: 0;
+    height: 100%;
+    top: 5px;
+    position: absolute;
+}
+.editor .editor-header .btn{
+    border-radius: 2px;
+    height: 28px;
+    line-height: 28px;
+    margin-right: 10px;
+    text-align: center;
+}
+.editor .editor-header .save{
+    display: inline-block;
+    background-color: #41447d;
+    width: 70px;
+}
+.editor .editor-header .preview{
+    display: inline-block;
+    width: 100px;
+    background: #00c4cd;
+}
+
+
+.editor .sideBar{
+    width: 360px;
+    height: 100%;
+    position: absolute;
+    float: left;
+    top: 38px;
+}
+.editor .sideBar .res-panel-nav{
+    width: 60px;
+    height: 100%;
+    background-color: #272c33;
+    float: left;
+}
+.editor .sideBar .res-panel-nav li{
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+.editor .sideBar .res-panel-nav li:hover{
+    color: #00c4cd;
+}
+.editor .sideBar .res-panel-nav li.active{
+    background-color: #373E48;
+    color: #00c4cd;
+}
+
+
+
+.editor .sideBar .res-panel-lib{
+    width: 300px;
+    height: 100%;
+    background-color: #373E48;
+    float: left;
+}
+
+.editor .workPlace{
+    width: calc(100% - 660px);
+    height: 100%;
+    position: absolute;
+    left: 360px;
+    top: 38px;
+}
+.editor .workPlace .stage{
+    width: 480px;
+    height: 750px;
+    top: 0px;
+    position: absolute;
+    background: #fff;
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
+    z-index: 5;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.editor .workPlace .stage .header{
+    width: 100%;
+    height: 150px;
+    border: 1px dashed #fff;
+    box-sizing: border-box;
+    position: relative;
+}
+.editor .workPlace .stage .body{
+    width: 100%;
+    height: 450px;
+    border: 1px dashed #fff;
+    box-sizing: border-box;
+    position: relative;
+}
+.editor .workPlace .stage .bottom{
+    width: 100%;
+    height: 150px;
+    border: 1px dashed #fff;
+    box-sizing: border-box;
+    position: relative;
+}
+.editor .workPlace .stage .header .cmpDrawOperate,
+.editor .workPlace .stage .body .cmpDrawOperate,
+.editor .workPlace .stage .bottom .cmpDrawOperate{
+    display: none;
+}
+.editor .workPlace .stage .header.active .cmpDrawOperate,
+.editor .workPlace .stage .body.active .cmpDrawOperate,
+.editor .workPlace .stage .bottom.active .cmpDrawOperate{
+    display: block;
+}
+.editor .workPlace .stage .active .dot-s{
+    width: 5px;
+    height: 5px;
+    top: 100%;
+    left: 50%;
+    border: 1px solid #333;
+    cursor: s-resize;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+}
+.editor .workPlace .stage .active .dot-n{
+    width: 5px;
+    height: 5px;
+    top: 0;
+    left: 50%;
+    border: 1px solid #333;
+    cursor: n-resize;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+}
+
+
+
+.editor .workPlace .stage .cmpDrawWrapper{
+    position: absolute;
+    outline: none;
+    z-index: 0;
+    -webkit-user-select: none;
+    pointer-events: none;
+}
+.editor .workPlace .stage .cmpDrawWrapper .cmpDrawRender{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    pointer-events: auto;
+}
+.editor .workPlace .stage .cmpDrawWrapper .cmpDrawRender .cmpScaleArea{
+    height: 100%;
+}
+.editor .workPlace .stage .cmpDrawWrapper .cmpDrawRender .cmpScaleArea .cmpMain{
+    outline: none;
+    height: 100%;
+}
+.editor .workPlace .stage .cmpDrawOperate{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    cursor: pointer;
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+    pointer-events: auto;
+}
+.editor .workPlace .stage .cmpDrawOperate .borderLine{
+    position: absolute;
+    box-sizing: content-box;
+    width: 100%;
+    height: 100%;
+    margin: -1px 0 0 -1px;
+    border: 1px solid #fff;
+}
+.editor .workPlace .stage .cmpDrawOperate .dashed{
+    border: 1px dashed #000;
+}
+.editor .workPlace .stage .cmpDrawOperate .dot-e{
+    top: 50%;
+    right: -4px;
+    margin-top: -4px;
+    cursor: e-resize;
+}
+.editor .workPlace .stage .cmpDrawOperate .dot-w{
+    top: 50%;
+    left: -4px;
+    margin-top: -4px;
+    cursor: w-resize;
+}
+.editor .workPlace .stage .cmpDrawOperate .dot{
+    position: absolute;
+    background-color: #fff;
+    width: 5px;
+    height: 5px;
+    border: 1px solid #4a4a4a;
+}
+
+.editor .workPlace .tools{
+    position: fixed;
+    width: 40px;
+    top: 200px;
+    z-index: 1000;
+    right: 428px;
+}
+.editor .workPlace .tools .tools-box{
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.editor .workPlace .tools .tools-box a{
+    width: 40px;
+    height: 42px;
+    background-color: #646a74;
+    color: #fff;
+    font-size: 12px;
+    display: inline-block;
+    line-height: 42px;
+    text-align: center;
+}
+.editor .workPlace .tools .tools-box a:hover{
+    color: #00c4cd;
+    background-color: #51555c; 
+}
+.editor .workPlace .tools .tools-box a.active{
+    color: #00c4cd;
+    background-color: #51555c; 
+}
+.editor .workPlace .tools .tools-box a:first-child{
+    border-bottom: 1px solid #525861;
+    border-radius: 2px 2px 0 0;
+}
+.editor .workPlace .tools .tools-box a:last-child{
+    border-radius: 0 0 2px 2px;
+}
+
+.editor .detailBar{
+    width: 300px;
+    height: 100%;
+    position: absolute;
+    background-color: white;
+    top: 38px;
+    right: 0;
+}
+.editor .detailBar ul,
+.editor .detailBar ul li{
+    font-size: 12px;
+}
+.editor .detailBar ul li>.title{
+    display: block;
+    line-height: 35px;
+    background-color: #fcfcfc;
+    text-indent: 5px;
+    font-size: 14px;
+}
+.editor .detailBar ul li>ul{
+    padding-bottom: 10px;
+}
+.editor .detailBar ul li li{
+    margin:10px 0 0 20px;
+}
+.editor .detailBar ul li li .colorPanel{
+    height: 30px;
+    margin-top: 5px;
+}
+.editor .detailBar ul li li .colorPanel .colorSample{
+    width: 28px;
+    height: 28px;
+    border: 1px solid #999;
+    display: inline-block;
+}
+.editor .detailBar ul li li .colorPanel input{
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    line-height: 22px;
+    position: absolute;
+    margin: 3px 0 0 10px;
+    text-indent: 10px;
+    border: 1px solid #999;
+}
+
+.editor .detailBar .selectPanel{
+    margin-top: 5px;
+}
+.editor .detailBar .selectPanel div{
+    width: 198px;
+    height: 28px;
+}
+.editor .detailBar .selectPanel input{
+    width: 198px;
+    height: 24px;
+    text-indent: 10px;
+    line-height: 24px;
+    border: 1px solid #999;
+}
+.editor .detailBar .selectPanel i{
+    top: -24px;
+    position: relative;
+    display: inline-block;
+    float: right;
+    font-size: 20px;
+    color: rgb(102, 102, 102);
+    transition: all 0.3s;
+}
+
+.editor .detailBar .selectPanel>ul{
+    width: 200px;
+    border: 1px solid #999;
+    position: absolute;
+    z-index: 9;
+    background-color: #fff;
+}
+.editor .detailBar .selectPanel>ul>li{
+    line-height: 30px;
+    margin: 0px;
+    text-indent: 10px;
+}
+.editor .detailBar .selectPanel>ul>li:hover{
+    background-color: #999;
+}
+
+.editor .detailBar .positionPanel li{
+    margin-right: 20px;
+}
+.editor .detailBar .positionPanel li>div{
+    display: inline-block;
+    width: 120px;
+}
+.editor .detailBar .positionPanel a{
+    display: block;
+}
+.editor .detailBar .positionPanel input{
+    height: 24px;
+    width: 100px;
+    text-indent: 10px;
+    border: 1px solid #999;
+    border-radius: 2px;
+}
+
+.editor .detailBar .viewPanel{
+    height: 30px;
+}
+.editor .detailBar .viewPanel .selectPanel{
+    margin: 5px 20px;
+}
