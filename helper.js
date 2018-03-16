@@ -13,7 +13,9 @@ var _domHelper = {
             return element;
         }
 
-        while(element.className && element.className.indexOf(className) == -1){
+        element.className = element.className || '';
+
+        while(element.className.indexOf(className) == -1){
             return _domHelper.findParentNodeByClass(element.parentNode, className);
         }
         return element;

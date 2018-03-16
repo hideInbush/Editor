@@ -120,35 +120,29 @@ ul,li,input{
     transform: translateX(-50%);
 }
 
-.editor .workPlace .stage .header{
+.editor .workPlace .stage .block-header{
     width: 100%;
     height: 150px;
-    border: 1px dashed #fff;
-    box-sizing: border-box;
     position: relative;
 }
-.editor .workPlace .stage .body{
+.editor .workPlace .stage .block-body{
     width: 100%;
     height: 450px;
-    border: 1px dashed #fff;
-    box-sizing: border-box;
     position: relative;
 }
-.editor .workPlace .stage .bottom{
+.editor .workPlace .stage .block-bottom{
     width: 100%;
     height: 150px;
-    border: 1px dashed #fff;
-    box-sizing: border-box;
     position: relative;
 }
-.editor .workPlace .stage .header .cmpDrawOperate,
-.editor .workPlace .stage .body .cmpDrawOperate,
-.editor .workPlace .stage .bottom .cmpDrawOperate{
+.editor .workPlace .stage .block-header .cmp-operate,
+.editor .workPlace .stage .block-body .cmp-operate,
+.editor .workPlace .stage .block-bottom .cmp-operate{
     display: none;
 }
-.editor .workPlace .stage .header.active .cmpDrawOperate,
-.editor .workPlace .stage .body.active .cmpDrawOperate,
-.editor .workPlace .stage .bottom.active .cmpDrawOperate{
+.editor .workPlace .stage .block-header.active .cmp-operate,
+.editor .workPlace .stage .block-body.active .cmp-operate,
+.editor .workPlace .stage .block-bottom.active .cmp-operate{
     display: block;
 }
 .editor .workPlace .stage .active .dot-s{
@@ -183,20 +177,20 @@ ul,li,input{
     -webkit-user-select: none;
     pointer-events: none;
 }
-.editor .workPlace .stage .cmpDrawWrapper .cmpDrawRender{
+.editor .workPlace .stage .cmpDrawWrapper .cmp-render{
     position: absolute;
     top: 50%;
     left: 50%;
     pointer-events: auto;
 }
-.editor .workPlace .stage .cmpDrawWrapper .cmpDrawRender .cmpScaleArea{
+.editor .workPlace .stage .cmpDrawWrapper .cmp-render .cmpScaleArea{
     height: 100%;
 }
-.editor .workPlace .stage .cmpDrawWrapper .cmpDrawRender .cmpScaleArea .cmpMain{
+.editor .workPlace .stage .cmpDrawWrapper .cmp-render .cmpScaleArea .cmpMain{
     outline: none;
     height: 100%;
 }
-.editor .workPlace .stage .cmpDrawOperate{
+.editor .workPlace .stage .cmp-operate{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -205,7 +199,7 @@ ul,li,input{
     transform-origin: center center;
     pointer-events: auto;
 }
-.editor .workPlace .stage .cmpDrawOperate .borderLine{
+.editor .workPlace .stage .cmp-operate .borderLine{
     position: absolute;
     box-sizing: content-box;
     width: 100%;
@@ -213,22 +207,22 @@ ul,li,input{
     margin: -1px 0 0 -1px;
     border: 1px solid #fff;
 }
-.editor .workPlace .stage .cmpDrawOperate .dashed{
+.editor .workPlace .stage .cmp-operate .dashed{
     border: 1px dashed #000;
 }
-.editor .workPlace .stage .cmpDrawOperate .dot-e{
+.editor .workPlace .stage .cmp-operate .dot-e{
     top: 50%;
     right: -4px;
     margin-top: -4px;
     cursor: e-resize;
 }
-.editor .workPlace .stage .cmpDrawOperate .dot-w{
+.editor .workPlace .stage .cmp-operate .dot-w{
     top: 50%;
     left: -4px;
     margin-top: -4px;
     cursor: w-resize;
 }
-.editor .workPlace .stage .cmpDrawOperate .dot{
+.editor .workPlace .stage .cmp-operate .dot{
     position: absolute;
     background-color: #fff;
     width: 5px;

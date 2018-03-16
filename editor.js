@@ -6,7 +6,7 @@
         var element = e.target || e.srcElement;
 
         if(element.className.indexOf('dot-s') > -1 || element.className.indexOf('dot-n') > -1){
-            var drag = _domHelper.findParentNodeByClass(element, 'view');
+            var drag = _domHelper.findParentNodeByClass(element, 'block');
             resizeCmp(e, drag);
         }else if(element.className.indexOf('dot') > -1){
             /**
@@ -46,7 +46,7 @@
             b = 0;
         var e = e || window.event; //兼容ie浏览器  
         var target = e.target || e.srcElement,
-            targetType = target.getAttribute("data-type");
+            direction = target.getAttribute("data-direction");
         // var cmpDrawWrapper = target.parentNode.parentNode.parentNode;
         var cmpDrawWrapper = drag;
         var oldX = e.clientX,
@@ -69,35 +69,35 @@
                 newY = e.clientY,
                 newL = oBoxL,
                 newT = oBoxT;
-            if (targetType == 'right') {
+            if (direction == 'right') {
                 newW = oBoxW + (newX - oldX);
                 if (parseFloat(newW) <= 5 || parseFloat(newW) + oBoxL > parseFloat(containerW)) {
                     return;
                 };
             };
-            if (targetType == 'left') {
+            if (direction == 'left') {
                 newW = oBoxW + (oldX - newX);
                 if (parseFloat(newW) <= 5 || newX - oldX + oBoxL < 0 || parseFloat(newW) + Math.abs(newX - oldX + oBoxL) > parseFloat(containerW)) {
                     return;
                 };
                 newL = newX - oldX + oBoxL;
             };
-            if (targetType == 'top') {
+            if (direction == 'top') {
                 newH = oBoxH + (oldY - newY);
                 if (parseFloat(newH) <= 5 || parseFloat(newH) + Math.abs(newY - oldY + oBoxT) > parseFloat(containerH)) {
                     return;
                 };
                 newT = newY - oldY + oBoxT;
-                cmpDrawWrapper.style.top = newY - oldY + oBoxT + 'px';
+                // cmpDrawWrapper.style.top= newY - oldY + oBoxT + 'px';
             };
-            if (targetType == 'bottom') {
+            if (direction == 'bottom') {
                 newH = oBoxH + (newY - oldY);
                 if (parseFloat(newH) <= 5 || parseFloat(newH) + oBoxT > parseFloat(containerH)) {
                     // newY - oldY + oBoxT < 0 ||
                     return;
                 };
             };
-            if (targetType == 'rightTop') {
+            if (direction == 'rightTop') {
                 newW = oBoxW + (newX - oldX);
                 newH = oBoxH + (oldY - newY);
                 if (parseFloat(newH) <= 5 || parseFloat(newW) <= 5 || parseFloat(newW) + oBoxL > parseFloat(containerW) || newY - oldY + oBoxT < 0 || parseFloat(newH) + Math.abs(newY - oldY + oBoxT) > parseFloat(containerH)) {
@@ -105,7 +105,7 @@
                 }
                 newT = newY - oldY + oBoxT;
             };
-            if (targetType == 'leftBottom') {
+            if (direction == 'leftBottom') {
                 newW = oBoxW + (oldX - newX);
                 newH = oBoxH + (newY - oldY);
                 if (parseFloat(newH) <= 5 || parseFloat(newW) <= 5 || newX - oldX + oBoxL < 0 || parseFloat(newW) + Math.abs(newX - oldX + oBoxL) > parseFloat(containerW) || parseFloat(newH) + oBoxT > parseFloat(containerH)) {
@@ -113,7 +113,7 @@
                 };
                 newL = newX - oldX + oBoxL;
             };
-            if (targetType == 'leftTop') {
+            if (direction == 'leftTop') {
                 newW = oBoxW + (oldX - newX);
                 newH = oBoxH + (oldY - newY);
                 if (parseFloat(newH) <= 5 || parseFloat(newW) <= 5 || newX - oldX + oBoxL < 0 || parseFloat(newW) + Math.abs(newX - oldX + oBoxL) > parseFloat(containerW) || newY - oldY + oBoxT < 0 || parseFloat(newH) + Math.abs(newY - oldY + oBoxT) > parseFloat(containerH)) {
@@ -122,7 +122,7 @@
                 newL = newX - oldX + oBoxL;
                 newT = newY - oldY + oBoxT;
             };
-            if (targetType == 'rightBottom') {
+            if (direction == 'rightBottom') {
                 newW = oBoxW + (newX - oldX);
                 newH = oBoxH + (newY - oldY);
                 if (parseFloat(newW) <= 5 || parseFloat(newH) <= 5 || parseFloat(newW) + oBoxL > parseFloat(containerW) || parseFloat(newH) + oBoxT > parseFloat(containerH)) {
@@ -143,23 +143,24 @@
             cmpOperate.style.height = newH + 'px';
             // cmpOperate.style.cssText += calPosStr;
 
-            // editingCmpAttr.x = newL;
-            // editingCmpAttr.y = newT;
-            // editingCmpAttr.width = newW;
-            // editingCmpAttr.height = newH;
-            // editingWrapper.setAttribute("data-attr", JSON.stringify(editingCmpAttr));
-            // modelEditFuncs.controlPanelPosChange();
             editFlag = true;
             return false;
         };
         document.onmouseup = function () {
             if (editFlag) {
-                // modelEditFuncs.historyCanvas.push(modelEditFuncs.modelEditorCanvasArea.innerHTML);
                 editFlag = false;
             };
             document.onmousedown = null;
             document.onmousemove = null;
 
+            drag.style.top = 0;
+            if(drag.className.indexOf('block-header') > -1){
+                resizeThreeBlock('header');
+            }else if(drag.className.indexOf('block-body') > -1){
+                resizeThreeBlock('body', direction);
+            }else if(drag.className.indexOf('block-bottom') > -1){
+                resizeThreeBlock('bottom');
+            }
         };
     }
 
@@ -304,30 +305,30 @@
                 var input = element.parentNode.previousElementSibling.children[0];
                 input.value = element.getAttribute('data-name');
 
-                if(type == 'viewPart'){
-                    var stage = document.querySelector('.stage');
-                    var header = stage.querySelector('.header');
-                    var body = stage.querySelector('.body');
-                    var bottom = stage.querySelector('.bottom');
+                // if(type == 'viewPart'){
+                //     var stage = document.querySelector('.stage');
+                //     var header = stage.querySelector('.header');
+                //     var body = stage.querySelector('.body');
+                //     var bottom = stage.querySelector('.bottom');
                     
-                    stage.querySelector('.active').className = document.querySelector('.stage').querySelector('.active').className.replace('active', '');
-                    if(input.value == '头部编辑'){
-                        header.className += ' active';
+                //     stage.querySelector('.active').className = document.querySelector('.stage').querySelector('.active').className.replace('active', '');
+                //     if(input.value == '头部编辑'){
+                //         header.className += ' active';
 
-                        header.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
-                        header.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(body).height) - parseFloat(window.getComputedStyle(bottom).height) + 'px';
-                    }else if(input.value == '正文编辑'){
-                        body.className += ' active';
+                //         header.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
+                //         header.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(body).height) - parseFloat(window.getComputedStyle(bottom).height) + 'px';
+                //     }else if(input.value == '正文编辑'){
+                //         body.className += ' active';
 
-                        body.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
-                        body.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(header).height) - parseFloat(window.getComputedStyle(bottom).height) + 'px';
-                    }else if(input.value == '尾部编辑'){
-                        bottom.className += ' active';
+                //         body.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
+                //         body.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(header).height) - parseFloat(window.getComputedStyle(bottom).height) + 'px';
+                //     }else if(input.value == '尾部编辑'){
+                //         bottom.className += ' active';
 
-                        bottom.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
-                        bottom.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(header).height) - parseFloat(window.getComputedStyle(body).height) + 'px';
-                    }
-                }
+                //         bottom.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
+                //         bottom.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(header).height) - parseFloat(window.getComputedStyle(body).height) + 'px';
+                //     }
+                // }
             }
         }
 
@@ -377,4 +378,33 @@
         
     }
     
+
+    /**
+     * @description 动态更新头部、正文、底部三块高度大小
+     * @param {block} 当前不变化的部分
+     */
+    function resizeThreeBlock(block, direction){
+        var stage = document.querySelector('.stage');
+        var header = document.querySelector('.block-header');
+        var body = document.querySelector('.block-body');
+        var bottom = document.querySelector('.block-bottom');
+        
+        var stageHeight = parseFloat(window.getComputedStyle(stage).height);
+        var headerHeight = parseFloat(window.getComputedStyle(header).height);
+        var bodyHeight = parseFloat(window.getComputedStyle(body).height);
+        var bottomHeight = parseFloat(window.getComputedStyle(bottom).height);
+        
+        switch(block){
+            case 'header':
+                body.style.height = stageHeight - headerHeight - bottomHeight + 'px';
+                break;
+            case 'body':
+                direction == 'top' && (header.style.height = stageHeight - bodyHeight - bottomHeight + 'px');
+                direction == 'bottom' && (bottom.style.height = stageHeight - bodyHeight - headerHeight + 'px');
+                break;
+            case 'bottom':
+                body.style.height = stageHeight - headerHeight - bottomHeight + 'px';
+                break;
+        }
+    }
 })();
