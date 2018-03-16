@@ -135,23 +135,15 @@
             cmpDrawWrapper.style.left = newL + 'px';
             cmpDrawWrapper.style.top = newT + 'px';
 
-            cmpRender.style.width = newW + 'px';
-            cmpRender.style.height = newH + 'px';
+            // cmpRender.style.width = newW + 'px';
+            // cmpRender.style.height = newH + 'px';
             // cmpRender.style.cssText += calPosStr;
 
-            cmpOperate.style.width = newW + 'px';
-            cmpOperate.style.height = newH + 'px';
+            // cmpOperate.style.width = newW + 'px';
+            // cmpOperate.style.height = newH + 'px';
             // cmpOperate.style.cssText += calPosStr;
 
             editFlag = true;
-            return false;
-        };
-        document.onmouseup = function () {
-            if (editFlag) {
-                editFlag = false;
-            };
-            document.onmousedown = null;
-            document.onmousemove = null;
 
             drag.style.top = 0;
             if(drag.className.indexOf('block-header') > -1){
@@ -161,6 +153,16 @@
             }else if(drag.className.indexOf('block-bottom') > -1){
                 resizeThreeBlock('bottom');
             }
+            return false;
+        };
+        document.onmouseup = function () {
+            if (editFlag) {
+                editFlag = false;
+            };
+            document.onmousedown = null;
+            document.onmousemove = null;
+
+            
         };
     }
 
@@ -305,30 +307,21 @@
                 var input = element.parentNode.previousElementSibling.children[0];
                 input.value = element.getAttribute('data-name');
 
-                // if(type == 'viewPart'){
-                //     var stage = document.querySelector('.stage');
-                //     var header = stage.querySelector('.header');
-                //     var body = stage.querySelector('.body');
-                //     var bottom = stage.querySelector('.bottom');
+                if(type == 'viewPart'){
+                    var stage = document.querySelector('.stage');
+                    var header = stage.querySelector('.block-header');
+                    var body = stage.querySelector('.block-body');
+                    var bottom = stage.querySelector('.block-bottom');
                     
-                //     stage.querySelector('.active').className = document.querySelector('.stage').querySelector('.active').className.replace('active', '');
-                //     if(input.value == '头部编辑'){
-                //         header.className += ' active';
-
-                //         header.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
-                //         header.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(body).height) - parseFloat(window.getComputedStyle(bottom).height) + 'px';
-                //     }else if(input.value == '正文编辑'){
-                //         body.className += ' active';
-
-                //         body.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
-                //         body.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(header).height) - parseFloat(window.getComputedStyle(bottom).height) + 'px';
-                //     }else if(input.value == '尾部编辑'){
-                //         bottom.className += ' active';
-
-                //         bottom.style.width = parseFloat(window.getComputedStyle(stage).width) + 'px';
-                //         bottom.style.height = parseFloat(window.getComputedStyle(stage).height) - parseFloat(window.getComputedStyle(header).height) - parseFloat(window.getComputedStyle(body).height) + 'px';
-                //     }
-                // }
+                    stage.querySelector('.active').className = document.querySelector('.stage').querySelector('.active').className.replace('active', '');
+                    if(input.value == '头部编辑'){
+                        header.className += ' active';
+                    }else if(input.value == '正文编辑'){
+                        body.className += ' active';
+                    }else if(input.value == '尾部编辑'){
+                        bottom.className += ' active';
+                    }
+                }
             }
         }
 

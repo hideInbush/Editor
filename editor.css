@@ -120,6 +120,12 @@ ul,li,input{
     transform: translateX(-50%);
 }
 
+.editor .workPlace .stage .block{
+    border: 1px solid #333;
+}
+.editor .workPlace .stage .active{
+    z-index: 99;
+}
 .editor .workPlace .stage .block-header{
     width: 100%;
     height: 150px;
