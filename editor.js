@@ -5,41 +5,60 @@
     document.querySelector('.stage').onmousedown = function(e){
         var element = e.target || e.srcElement;
 
-        if(element.className.indexOf('dot-s') > -1 || element.className.indexOf('dot-n') > -1){
-            var drag = _domHelper.findParentNodeByClass(element, 'block');
-            resizeCmp(e, drag);
-        }else if(element.className.indexOf('dot') > -1){
+        if(element.className.indexOf('dot') > -1){
             /**
              * 判断是否在边缘的小正方形上
              */
-            var drag = _domHelper.findParentNodeByClass(element, 'cmpDrawWrapper');
-            resizeCmp(e, drag);
+            var blockFlag = element.getAttribute('data-blockflag');
+            if(blockFlag == 'true'){
+                var drag = _domHelper.findParentNodeByClass(element, 'block');
+            }else{
+                var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
+            }
+            resizeCmp(e, drag, blockFlag);
         }else{
-            var drag = _domHelper.findParentNodeByClass(element, 'cmpDrawWrapper');
+            var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
             if(drag.tagName.toLocaleLowerCase() == 'body'){
                 /**
                  * @description 点击在空白处
                  */
-
-                var elements = document.querySelectorAll('.cmpDrawWrapper');
+                var elements = document.querySelectorAll('.cmp-wrapper');
                 for(var i=0; i<elements.length; i++){
-                    if(elements[i].querySelector('.cmpDrawOperate').children[0].style.display == 'block'){
-                        elements[i].querySelector('.cmpDrawOperate').children[0].style.display = 'none';
+                    if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
+                        elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
                     }
                 }
+                updateDetailBar(drag, 'clear');
             }else{
-                drag.querySelector('.cmpDrawOperate').children[0].style.display = 'block';
+                drag.querySelector('.cmp-operate').children[0].style.display = 'block';
                 dragAndDrop(e, drag);
             }
         }
     }
 
 
+    document.querySelector('.positionPanel').onchange = function(e){
+        var element = e.target || e.srcElement;
+        var stage = document.querySelector('.stage');
+        var cmp = stage.querySelector('.checked').parentNode;
+        if(element.getAttribute('data-type') == 'x'){
+            cmp.style.left = parseFloat(element.value) + 'px';
+        }else if(element.getAttribute('data-type') == 'y'){
+            cmp.style.top = parseFloat(element.value) + 'px';
+        }else if(element.getAttribute('data-type') == 'w'){
+            cmp.style.width = parseFloat(element.value) + 'px';
+        }else if(element.getAttribute('data-type') == 'h'){
+            cmp.style.height = parseFloat(element.value) + 'px';
+        }
+    }
+
     /**
      * @description 自由变换大小
-     * @param {}
+     * @param {e} event
+     * @param {element} dom元素
+     * @param {blockFlag} 是否为三部分模块
      */
-    function resizeCmp(e, drag){
+    function resizeCmp(e, element, blockFlag){
         var editFlag = false;
         // _commonPieces.commonPieces.forbidEnd();
         var a = 0,
@@ -48,7 +67,7 @@
         var target = e.target || e.srcElement,
             direction = target.getAttribute("data-direction");
         // var cmpDrawWrapper = target.parentNode.parentNode.parentNode;
-        var cmpDrawWrapper = drag;
+        var cmpDrawWrapper = element;
         var oldX = e.clientX,
             oldY = e.clientY;
         var oBoxW = parseFloat(window.getComputedStyle(cmpDrawWrapper).width),
@@ -62,7 +81,7 @@
         var containerH = cmpDrawWrapper.parentNode.parentNode.style.height,
             containerW = cmpDrawWrapper.parentNode.parentNode.style.width;
         document.onmousemove = function (e) {
-            updateDetailBar(drag);
+            updateDetailBar(element, blockFlag == 'true' ? 'block' : '');
 
             var e = e || event;
             var newX = e.clientX,
@@ -143,26 +162,20 @@
             // cmpOperate.style.height = newH + 'px';
             // cmpOperate.style.cssText += calPosStr;
 
-            editFlag = true;
+            blockFlag == 'true' && (element.style.top = 0);
 
-            drag.style.top = 0;
-            if(drag.className.indexOf('block-header') > -1){
+            if(element.className.indexOf('block-header') > -1){
                 resizeThreeBlock('header');
-            }else if(drag.className.indexOf('block-body') > -1){
+            }else if(element.className.indexOf('block-body') > -1){
                 resizeThreeBlock('body', direction);
-            }else if(drag.className.indexOf('block-bottom') > -1){
+            }else if(element.className.indexOf('block-bottom') > -1){
                 resizeThreeBlock('bottom');
             }
             return false;
         };
         document.onmouseup = function () {
-            if (editFlag) {
-                editFlag = false;
-            };
             document.onmousedown = null;
             document.onmousemove = null;
-
-            
         };
     }
 
@@ -184,19 +197,20 @@
         }
         document.onmousemove = function (e) {
             var e = e || window.event; //兼容ie浏览器  
+            var stage = document.querySelector('.stage');
             var left = e.clientX - diffX;
             var top = e.clientY - diffY;
             //控制拖拽物体的范围只能在浏览器视窗内，不允许出现滚动条  
             if (left < 0) {
                 left = 0;
-            } else if (left > parseFloat(drag.parentNode.offsetWidth) - parseFloat(drag.offsetWidth)) {
+            } else if (left > parseFloat(stage.offsetWidth) - parseFloat(drag.offsetWidth)) {
                 // left = parseFloat(drag.style.width) - parseFloat(drag.offsetWidth);
-                left = parseFloat(drag.parentNode.offsetWidth) - parseFloat(drag.offsetWidth);
+                left = parseFloat(stage.offsetWidth) - parseFloat(drag.offsetWidth);
             };
             if (top < 0) {
                 top = 0;
-            } else if (top > parseFloat(drag.parentNode.offsetHeight) - parseFloat(drag.offsetHeight)) {
-                top = parseFloat(drag.parentNode.style.height) - parseFloat(drag.offsetHeight);
+            } else if (top > parseFloat(stage.offsetHeight) - parseFloat(drag.offsetHeight)) {
+                top = parseFloat(stage.style.height) - parseFloat(drag.offsetHeight);
             };
             //移动时重新得到物体的距离，解决拖动时出现晃动的现象  
             drag.style.left = left + 'px';
@@ -316,10 +330,13 @@
                     stage.querySelector('.active').className = document.querySelector('.stage').querySelector('.active').className.replace('active', '');
                     if(input.value == '头部编辑'){
                         header.className += ' active';
+                        updateDetailBar(header, 'block');
                     }else if(input.value == '正文编辑'){
                         body.className += ' active';
+                        updateDetailBar(body, 'block');
                     }else if(input.value == '尾部编辑'){
                         bottom.className += ' active';
+                        updateDetailBar(bottom, 'block');
                     }
                 }
             }
@@ -343,7 +360,7 @@
      * @description 更新右侧设置信息
      * @param {element} dom元素
      */
-    function updateDetailBar(element){
+    function updateDetailBar(element, type){
         var detailBar = document.querySelector('.detailBar');
         var bgColorPanel = detailBar.querySelectorAll('.colorPanel')[0];
         var fontColorPanel = detailBar.querySelectorAll('.colorPanel')[1];
@@ -355,19 +372,41 @@
         var positionY = detailBar.querySelector('.positionY');
         var sizeW = detailBar.querySelector('.sizeW');
         var sizeH = detailBar.querySelector('.sizeH');
+
+        /**
+         * clear all status
+         */
+        bgColorPanel.children[0].style.backgroundColor = '';
+        bgColorPanel.children[1].value = '';
+        fontColorPanel.children[0].style.backgroundColor = '';
+        fontColorPanel.children[1].value = '';
+        fontPanel.querySelector('input').value = '';
+        sizePanel.querySelector('input').value = '';
+        thickPanel.querySelector('input').value = '';
         
-        bgColorPanel.children[0].style.backgroundColor = element.style.backgroundColor;
-        bgColorPanel.children[1].value = _colorHelper.colorHex(element.style.backgroundColor);
-        fontColorPanel.children[0].style.backgroundColor = element.style.color;
-        fontColorPanel.children[1].value = _colorHelper.colorHex(element.style.color);
-        fontPanel.querySelector('input').value = window.getComputedStyle(element).fontFamily;
-        sizePanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontSize);
-        thickPanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontWeight);
-        
-        positionX.children[1].value = parseInt(element.style.left);
-        positionY.children[1].value = parseInt(element.style.top);
-        sizeW.children[1].value = parseInt(element.style.width);
-        sizeH.children[1].value = parseInt(element.style.height);
+        positionX.children[1].value = '';
+        positionY.children[1].value = '';
+        sizeW.children[1].value = '';
+        sizeH.children[1].value = '';
+
+        if(type == 'block'){
+            sizeW.children[1].value = parseInt(element.style.width || window.getComputedStyle(element).width);
+            sizeH.children[1].value = parseInt(element.style.height || window.getComputedStyle(element).height) ;
+        }else if(type == 'clear'){
+        }else{
+            bgColorPanel.children[0].style.backgroundColor = element.style.backgroundColor;
+            bgColorPanel.children[1].value = _colorHelper.colorHex(element.style.backgroundColor);
+            fontColorPanel.children[0].style.backgroundColor = element.style.color;
+            fontColorPanel.children[1].value = _colorHelper.colorHex(element.style.color);
+            fontPanel.querySelector('input').value = window.getComputedStyle(element).fontFamily;
+            sizePanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontSize);
+            thickPanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontWeight);
+            
+            positionX.children[1].value = parseInt(element.style.left);
+            positionY.children[1].value = parseInt(element.style.top);
+            sizeW.children[1].value = parseInt(element.style.width);
+            sizeH.children[1].value = parseInt(element.style.height);
+        }
         
     }
     

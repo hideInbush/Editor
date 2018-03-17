@@ -121,7 +121,10 @@ ul,li,input{
 }
 
 .editor .workPlace .stage .block{
-    border: 1px solid #333;
+    /* border: 1px solid #333; */
+}
+.editor .workPlace .stage .block .cmp-operate{
+    cursor: default;
 }
 .editor .workPlace .stage .active{
     z-index: 99;
@@ -176,30 +179,30 @@ ul,li,input{
 
 
 
-.editor .workPlace .stage .cmpDrawWrapper{
+.editor .workPlace .stage .cmp-wrapper{
     position: absolute;
     outline: none;
     z-index: 0;
     -webkit-user-select: none;
     pointer-events: none;
 }
-.editor .workPlace .stage .cmpDrawWrapper .cmp-render{
+.editor .workPlace .stage .cmp-wrapper .cmp-render{
     position: absolute;
     top: 50%;
-    left: 50%;
+    /* left: 50%; */
     pointer-events: auto;
 }
-.editor .workPlace .stage .cmpDrawWrapper .cmp-render .cmpScaleArea{
+.editor .workPlace .stage .cmp-wrapper .cmp-render .cmpScaleArea{
     height: 100%;
 }
-.editor .workPlace .stage .cmpDrawWrapper .cmp-render .cmpScaleArea .cmpMain{
+.editor .workPlace .stage .cmp-wrapper .cmp-render .cmpScaleArea .cmpMain{
     outline: none;
     height: 100%;
 }
 .editor .workPlace .stage .cmp-operate{
     position: absolute;
     top: 50%;
-    left: 50%;
+    /* left: 50%; */
     cursor: pointer;
     -webkit-transform-origin: center center;
     transform-origin: center center;

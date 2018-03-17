@@ -29,14 +29,30 @@
     <div class="workPlace">
         <div class="stage">
             <div class="block block-header active">
-                <!-- <span data-type="bottom" class="dot-s"></span> -->
                 <div class="cmp-render" style="width:0;height:0;">
                 </div>
                 <div class="cmp-operate" data-type="logo" style="width:100%;height:100%;top:0;left:0;">
                     <div style="display: block;">
                         <div class="borderLine"></div>
                         <div class="borderLine dashed"></div>
-                        <div class="dot dot-s" data-direction="bottom"></div>
+                        <div class="dot dot-s" data-blockflag="true" data-direction="bottom"></div>
+                    </div>
+                </div>
+                <div style="position: absolute;width:100%;height:100%;">
+                    <div class="cmp-wrapper" style="left:50px;top:60px;width:100px;height:20px;color:#ff0000;background-color:#fff;">
+                        <div class="cmp-render" style="width:100%;height:100%;">
+                            <div class="cmpScaleArea">
+                                <div data-type="logo" class="cmpMain">请输入logo文字</div>
+                            </div>
+                        </div>
+                        <div class="cmp-operate checked" data-type="logo" style="width:100%;height:100%;">
+                            <div style="display: block;">
+                                <div class="borderLine"></div>
+                                <div class="borderLine dashed"></div>
+                                <div class="dot dot-e" data-direction="right"></div>
+                                <div class="dot dot-w" data-direction="left"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,8 +63,8 @@
                     <div style="display: block;">
                         <div class="borderLine"></div>
                         <div class="borderLine dashed"></div>
-                        <div class="dot dot-n" data-direction="top"></div>
-                        <div class="dot dot-s" data-direction="bottom"></div>
+                        <div class="dot dot-n" data-blockflag="true" data-direction="top"></div>
+                        <div class="dot dot-s" data-blockflag="true" data-direction="bottom"></div>
                     </div>
                 </div>
             </div>
@@ -59,25 +75,10 @@
                     <div style="display: block;">
                         <div class="borderLine"></div>
                         <div class="borderLine dashed"></div>
-                        <div class="dot dot-n" data-direction="top"></div>
+                        <div class="dot dot-n" data-blockflag="true" data-direction="top"></div>
                     </div>
                 </div>
             </div>
-            <!-- <div class="cmpDrawWrapper" style="left:50px;top:60px;width:100px;height:20px;color:#ff0000;background-color:#fff;">
-                <div class="cmpDrawRender" style="margin-left:-50px;margin-top:-10px;width:100px;height:20px;">
-                    <div class="cmpScaleArea">
-                        <div data-type="logo" class="cmpMain">请输入logo文字</div>
-                    </div>
-                </div>
-                <div class="cmpDrawOperate checked" data-type="logo" style="width:100px;height:20px;margin-left:-50px;margin-top:-10px;">
-                    <div class="cmpDrawBorders" style="display: block;">
-                        <div class="borderLine"></div>
-                        <div class="borderLine dashed"></div>
-                        <div class="dot dot-e" data-type="right"></div>
-                        <div class="dot dot-w" data-type="left"></div>
-                    </div>
-                </div>
-            </div> -->
         </div>
         <div class="tools">
             <div class="tools-box">
@@ -136,21 +137,21 @@
                     <li>
                         <div class="positionX">
                             <a>X</a>
-                            <input type="text" />
+                            <input data-type="x" type="number" />
                         </div>
                         <div class="positionY"> 
                             <a>Y</a>
-                            <input type="text" />
+                            <input data-type="y" type="number" />
                         </div>
                     </li>
                     <li>
                         <div class="sizeW">
                             <a>W</a>
-                            <input type="text"/>
+                            <input data-type="w" type="number"/>
                         </div>
                         <div class="sizeH">
                             <a>H</a>
-                            <input type="text"/>
+                            <input data-type="h" type="number"/>
                         </div>
                     </li>
                 </ul>
