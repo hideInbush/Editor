@@ -36,6 +36,12 @@
         }
     }
 
+    document.querySelector('.stage').ondbclick = function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-editable') == 'true'){
+
+        }
+    }
 
     document.querySelector('.positionPanel').onchange = function(e){
         var element = e.target || e.srcElement;
@@ -251,32 +257,48 @@
             '尾部编辑',
         ]
     };
-    renderSelect(viewSelect, document.querySelector('.viewPanel'), 'viewPart');
+    renderSelect(viewSelect, document.querySelector('.viewPanel'), 'block');
 
+    var fontMap_1 = {
+        'SimSun' : '宋体',
+        'SimHei' : '黑体',
+        'Microsoft Yahei' : '微软雅黑',
+    };
+    var fontMap_2 = {
+        '宋体' : 'SimSun',
+        '黑体' : 'SimHei',
+        '微软雅黑' : 'Microsoft Yahei',
+    };
     var fontSelect = {
         default: '',
         content: [
-            '宋体',
-            '微软雅黑'
+            '宋体',//SimSun
+            '黑体',//SimHei
+            '微软雅黑'//Microsoft Yahei
         ]
     };
     var sizeSelect = {
         default: '',
         content: [
-            '15',
+            '14',
+            '16',
+            '18',
             '20'
         ]
     };
     var thickSelect = {
         default: '',
         content: [
+            '200',
             '300',
-            '500'
+            '400',
+            '500',
+            '600'
         ]
     };
-    renderSelect(fontSelect, document.querySelector('.select-font'));
-    renderSelect(sizeSelect, document.querySelector('.select-size'));
-    renderSelect(thickSelect, document.querySelector('.select-thick'));
+    renderSelect(fontSelect, document.querySelector('.select-font'), 'font');
+    renderSelect(sizeSelect, document.querySelector('.select-size'), 'size');
+    renderSelect(thickSelect, document.querySelector('.select-thick'), 'weight');
     
     /**
      * @description 生成下拉框组件
@@ -321,8 +343,10 @@
                 var input = element.parentNode.previousElementSibling.children[0];
                 input.value = element.getAttribute('data-name');
 
-                if(type == 'viewPart'){
-                    var stage = document.querySelector('.stage');
+                var stage = document.querySelector('.stage');
+                var cmp = stage.querySelector('.checked').parentNode;
+
+                if(type == 'block'){
                     var header = stage.querySelector('.block-header');
                     var body = stage.querySelector('.block-body');
                     var bottom = stage.querySelector('.block-bottom');
@@ -338,6 +362,12 @@
                         bottom.className += ' active';
                         updateDetailBar(bottom, 'block');
                     }
+                }else if(type == 'font'){
+                    cmp.style.fontFamily = fontMap_2[input.value] || input.value;
+                }else if(type == 'size'){
+                    cmp.style.fontSize = parseInt(input.value) + 'px';
+                }else if(type == 'weight'){
+                    cmp.style.fontWeight = input.value;
                 }
             }
         }
@@ -398,7 +428,7 @@
             bgColorPanel.children[1].value = _colorHelper.colorHex(element.style.backgroundColor);
             fontColorPanel.children[0].style.backgroundColor = element.style.color;
             fontColorPanel.children[1].value = _colorHelper.colorHex(element.style.color);
-            fontPanel.querySelector('input').value = window.getComputedStyle(element).fontFamily;
+            fontPanel.querySelector('input').value = fontMap_1[window.getComputedStyle(element).fontFamily] || window.getComputedStyle(element).fontFamily;
             sizePanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontSize);
             thickPanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontWeight);
             
