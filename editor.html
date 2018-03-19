@@ -17,14 +17,49 @@
     </div>
     <div class="sideBar">
         <ul class="res-panel-nav">
-            <li class="active">版式</li>
-            <li>文本</li>
-            <li>素材</li>
-            <li>背景</li>
-            <li>互动</li>
-            <li>上传</li>
+            <li data-id="0" >版式</li>
+            <li data-id="1" class="active">
+                <i class="fa fa-picture-o" aria-hidden="true"></i>
+                素材
+            </li>
+            <li data-id="2">
+                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                上传
+            </li>
         </ul>
-        <div class="res-panel-lib"></div>
+        <div class="res-panel-lib">
+            <div></div>
+            <div class="active">
+                <ul class="resource">
+                    <li class="icons icons-font" data-type="text">
+                        <div>
+                            <i class="fa fa-font" aria-hidden="true"></i>
+                        </div>
+                        <span>文本</span>
+                    </li>
+                    <li class="icons icons-image" data-type="image" data-id="2">
+                        <div>
+                            <i class="fa fa-camera-retro" aria-hidden="true"></i>
+                        </div>
+                        <span>图片</span>
+                    </li>
+                    <li class="icons icons-line" data-type="line">
+                        <div>
+                            <i class="fa fa-align-left" aria-hidden="true"></i>
+                        </div>
+                        <span>线条</span>
+                    </li>
+                </ul>
+            </div>
+            <div style="overflow:hidden;">
+                <ul class="resource" style="overflow:hidden;">
+                    <li class="image">
+                        <img src="./1.jpg"/>
+                    </li>
+                </ul>
+            </div>
+            <div></div>
+        </div>
     </div>
     <div class="workPlace">
         <div class="stage">
@@ -38,23 +73,7 @@
                         <div class="dot dot-s" data-blockflag="true" data-direction="bottom"></div>
                     </div>
                 </div>
-                <div style="position: absolute;width:100%;height:100%;">
-                    <div class="cmp-wrapper" style="left:50px;top:60px;width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:'SimSun';font-weight:200;">
-                        <div class="cmp-render" style="width:100%;height:100%;">
-                            <div class="cmpScaleArea">
-                                <div contenteditable="true" data-type="logo" data-editable="true" class="cmpMain">请输入logo文字</div>
-                            </div>
-                        </div>
-                        <div class="cmp-operate checked" data-type="logo" style="width:100%;height:100%;">
-                            <div style="display: block;">
-                                <div class="borderLine"></div>
-                                <div class="borderLine dashed"></div>
-                                <div class="dot dot-e" data-direction="right"></div>
-                                <div class="dot dot-w" data-direction="left"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <div class="block block-body">
                 <div class="cmp-render" style="width:0;height:0;">
@@ -76,6 +95,24 @@
                         <div class="borderLine"></div>
                         <div class="borderLine dashed"></div>
                         <div class="dot dot-n" data-blockflag="true" data-direction="top"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: absolute;width:100%;height:100%;top:0;">
+                <div class="cmp-wrapper" data-editable="false" style="left:50px;top:60px;width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:'SimSun';font-weight:200;">
+                    <div class="cmp-render" style="width:100%;height:100%;">
+                        <div class="cmpScaleArea">
+                            <div contenteditable="false" data-type="logo" class="cmpMain">请输入logo文字</div>
+                        </div>
+                    </div>
+                    <div class="cmp-operate" data-type="logo" style="width:100%;height:100%;">
+                        <div style="display: none;">
+                            <div class="borderLine"></div>
+                            <div class="borderLine dashed"></div>
+                            <div class="dot dot-e" data-direction="right"></div>
+                            <div class="dot dot-w" data-direction="left"></div>
+                        </div>
                     </div>
                 </div>
             </div>

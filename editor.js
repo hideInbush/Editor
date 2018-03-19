@@ -15,6 +15,9 @@
             }else{
                 var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
             }
+            if(drag.getAttribute('data-editable') == 'true'){
+                return;
+            }
             resizeCmp(e, drag, blockFlag);
         }else{
             var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
@@ -26,20 +29,66 @@
                 for(var i=0; i<elements.length; i++){
                     if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
                         elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
+                        elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
+                        elements[i].setAttribute('data-editable', 'false');
                     }
                 }
                 updateDetailBar(drag, 'clear');
             }else{
+                if(drag.getAttribute('data-editable') == 'true'){
+                    return;
+                }
+
+                var elements = document.querySelectorAll('.cmp-wrapper');
+                for(var i=0; i<elements.length; i++){
+                    if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
+                        elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
+                        elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
+                        elements[i].setAttribute('data-editable', 'false');
+                    }
+                }
                 drag.querySelector('.cmp-operate').children[0].style.display = 'block';
                 dragAndDrop(e, drag);
             }
         }
     }
 
-    document.querySelector('.stage').ondbclick = function(e){
+    document.querySelector('.stage').ondblclick = function(e){
         var element = e.target || e.srcElement;
-        if(element.getAttribute('data-editable') == 'true'){
+        if(element.getAttribute('contenteditable') == 'false'){
+            element.setAttribute('contenteditable', 'true');
+            var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
+            drag.setAttribute('data-editable', 'true');
+        }
+    }
 
+    document.querySelector('.sideBar').querySelector('.res-panel-nav').onclick = function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-id')){
+            var num = parseInt(element.getAttribute('data-id'));
+            document.querySelector('.sideBar').querySelector('.res-panel-nav').querySelector('.active').className = document.querySelector('.sideBar').querySelector('.res-panel-nav').querySelector('.active').className.replace('active','');
+            element.className += ' active';
+            document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.active').className = document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.active').className.replace('active','');
+            document.querySelector('.sideBar').querySelector('.res-panel-lib').children[num].className += ' active';
+        }
+    }
+
+    document.querySelector('.sideBar').querySelector('.res-panel-lib').onclick = function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-type') == 'text' || 
+            element.parentNode.getAttribute('data-type') == 'text' ||
+            element.parentNode.parentNode.getAttribute('data-type') == 'text'){
+            
+            insertText(document.querySelector('.stage').children[3]);
+        }else if(element.getAttribute('data-type') == 'image' || 
+                element.parentNode.getAttribute('data-type') == 'image' ||
+                element.parentNode.parentNode.getAttribute('data-type') == 'image'){
+            var num = parseInt(element.parentNode.getAttribute('data-id') || element.parentNode.getAttribute('data-id') || element.parentNode.parentNode.getAttribute('data-id'));
+            var lib = document.querySelector('.res-panel-lib');
+            lib.querySelector('.active').className = lib.querySelector('.active').className.replace('active','');
+            lib.children[num].className += ' active';
+        }else if(element.getAttribute('data-type') == 'line' || element.parentNode.getAttribute('data-type') == 'line'){
+            
         }
     }
 
@@ -244,6 +293,33 @@
                 drag.releaseCapture();
             }
         };
+    }
+
+
+    /**
+     * @description 生成文本
+     * @param {}
+     */
+    function insertText(container){
+        var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
+        var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
+        var textHtml = '<div class="cmp-wrapper" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+                            <div class="cmp-render" style="width:100%;height:100%;">\
+                                <div class="cmpScaleArea">\
+                                    <div contenteditable="true" data-type="logo" class="cmpMain">文本</div>\
+                                </div>\
+                            </div>\
+                            <div class="cmp-operate checked" data-type="logo" style="width:100%;height:100%;">\
+                                <div style="display: block;">\
+                                    <div class="borderLine"></div>\
+                                    <div class="borderLine dashed"></div>\
+                                    <div class="dot dot-e" data-direction="right"></div>\
+                                    <div class="dot dot-w" data-direction="left"></div>\
+                                </div>\
+                            </div>\
+                        </div>';
+
+        container.innerHTML += textHtml;
     }
 
     /**
@@ -469,4 +545,5 @@
                 break;
         }
     }
+
 })();

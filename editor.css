@@ -75,14 +75,22 @@ ul,li,input{
     background-color: #272c33;
     float: left;
 }
+.editor .sideBar .res-panel-nav i{
+    display: block;
+    top: 10px;
+    position: absolute;
+    text-align: center;
+    width: 60px;
+}
 .editor .sideBar .res-panel-nav li{
     width: 60px;
     height: 60px;
-    line-height: 60px;
+    line-height: 70px;
     color: #fff;
     font-size: 14px;
     text-align: center;
     cursor: pointer;
+    position: relative;
 }
 .editor .sideBar .res-panel-nav li:hover{
     color: #00c4cd;
@@ -99,6 +107,70 @@ ul,li,input{
     height: 100%;
     background-color: #373E48;
     float: left;
+}
+.editor .sideBar .res-panel-lib>div{
+    display: none;
+}
+.editor .sideBar .res-panel-lib .active{
+    display: block;
+}
+.editor .sideBar .res-panel-lib .resource .icons{
+    display: inline-block;
+    width: 50px;
+    height: 90px;
+    float: left;
+    margin: 10px 12px;
+    cursor: pointer;
+}
+.editor .sideBar .res-panel-lib .resource .icons:hover div{
+    border: 2px solid #fff;
+}
+.editor .sideBar .res-panel-lib .resource .icons:hover span{
+    color: #00CDA0;
+}
+.editor .sideBar .res-panel-lib .resource .icons-font div{
+    background-color:#00CDA0;
+}
+.editor .sideBar .res-panel-lib .resource .icons-image div{
+    background-color:#FEC749;
+}
+.editor .sideBar .res-panel-lib .resource .icons-line div{
+    background-color:#FF8181;
+}
+.editor .sideBar .res-panel-lib .resource .icons div{
+    width: 46px;
+    height: 46px;
+    border-radius: 4px;
+    color: #fff;
+    text-align: center;
+    line-height: 46px;
+    font-size: 30px;
+    border: 2px solid #373E48;
+}
+.editor .sideBar .res-panel-lib .resource .icons span{
+    line-height: 40px;
+    text-align: center;
+    display: block;
+    color: #fff;
+    font-size: 12px;
+}
+
+.editor .sideBar .res-panel-lib .resource .image{
+    display: inline-block;
+    float: left;
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #373E48;
+    margin-left: 20px;
+    cursor: pointer;
+    margin: 10px;
+}
+.editor .sideBar .res-panel-lib .resource .image:hover{
+    border: 1px solid #00c4cd;
+}
+.editor .sideBar .res-panel-lib .resource .image img{ 
+    display: block;
+    width: 80px;
 }
 
 .editor .workPlace{
@@ -182,13 +254,14 @@ ul,li,input{
 .editor .workPlace .stage .cmp-wrapper{
     position: absolute;
     outline: none;
-    z-index: 0;
+    /* z-index: 0; */
+    z-index: 999;
     -webkit-user-select: none;
     pointer-events: none;
 }
 .editor .workPlace .stage .cmp-wrapper .cmp-render{
     position: absolute;
-    top: 50%;
+    /* top: 50%; */
     /* left: 50%; */
     pointer-events: auto;
 }
@@ -198,10 +271,12 @@ ul,li,input{
 .editor .workPlace .stage .cmp-wrapper .cmp-render .cmpScaleArea .cmpMain{
     outline: none;
     height: 100%;
+    position: absolute;
+    z-index: 99;
 }
 .editor .workPlace .stage .cmp-operate{
     position: absolute;
-    top: 50%;
+    /* top: 50%; */
     /* left: 50%; */
     cursor: pointer;
     -webkit-transform-origin: center center;
