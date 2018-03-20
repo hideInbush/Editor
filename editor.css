@@ -306,6 +306,50 @@ ul,li,input{
     margin-top: -4px;
     cursor: w-resize;
 }
+.editor .workPlace .stage .cmp-operate .dot-n{
+    top: 0;
+    left:50%;
+    transform: translate(-50%, -50%);
+    cursor: n-resize;
+}
+.editor .workPlace .stage .cmp-operate .dot-s{
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: s-resize;
+}
+.editor .workPlace .stage .cmp-operate .dot-nw{
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    top: -5px;
+    left: -5px;
+    cursor: nw-resize;
+}
+.editor .workPlace .stage .cmp-operate .dot-ne{
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    top: -5px;
+    right: -5px;
+    cursor: ne-resize;
+}
+.editor .workPlace .stage .cmp-operate .dot-se{
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    bottom: -5px;
+    right: -5px;
+    cursor: se-resize;
+}
+.editor .workPlace .stage .cmp-operate .dot-sw{
+    bottom: -5px;
+    left: -5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    cursor: sw-resize;
+}
 .editor .workPlace .stage .cmp-operate .dot{
     position: absolute;
     background-color: #fff;
