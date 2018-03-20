@@ -356,6 +356,7 @@ ul,li,input{
     width: 5px;
     height: 5px;
     border: 1px solid #4a4a4a;
+    z-index: 99;
 }
 
 .editor .workPlace .tools{

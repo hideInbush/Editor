@@ -87,10 +87,14 @@
             var lib = document.querySelector('.res-panel-lib');
             lib.querySelector('.active').className = lib.querySelector('.active').className.replace('active','');
             lib.children[num].className += ' active';
-        }else if(element.getAttribute('data-type') == 'line' || element.parentNode.getAttribute('data-type') == 'line'){
+        }else if(element.getAttribute('data-type') == 'line' || 
+                element.parentNode.getAttribute('data-type') == 'line' ||
+                element.parentNode.parentNode.getAttribute('data-type') == 'line'){
             
+            insertLine(document.querySelector('.stage').children[3]);
         }else if(element.getAttribute('data-type') == 'image-item' ||
                 element.parentNode.getAttribute('data-type') == 'image-item'){
+            
             var src = element.getAttribute('data-src') || element.parentNode.getAttribute('data-src');
             insertImage(document.querySelector('.stage').children[3], src);
         }
@@ -351,6 +355,32 @@
                                     <div class="dot dot-ne" data-direction="rightTop"></div>\
                                     <div class="dot dot-sw" data-direction="leftBottom"></div>\
                                     <div class="dot dot-se" data-direction="rightBottom"></div>\
+                                </div>\
+                            </div>\
+                        </div>';
+
+        container.innerHTML += textHtml;
+    }
+
+        /**
+     * @description 生成线条
+     * @param {}
+     */
+    function insertLine(container){
+        var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
+        var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
+        var textHtml = '<div class="cmp-wrapper" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:2px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+                            <div class="cmp-render" style="width:100%;height:100%;">\
+                                <div class="cmpScaleArea">\
+                                    <div style="background-color:#333;width:100%;" class="cmpMain"></div>\
+                                </div>\
+                            </div>\
+                            <div class="cmp-operate checked" data-type="logo" style="width:100%;height:100%;">\
+                                <div style="display: block;">\
+                                    <div class="borderLine"></div>\
+                                    <div class="borderLine dashed"></div>\
+                                    <div class="dot dot-e" data-direction="right"></div>\
+                                    <div class="dot dot-w" data-direction="left"></div>\
                                 </div>\
                             </div>\
                         </div>';
