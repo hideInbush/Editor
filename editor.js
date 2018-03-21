@@ -100,6 +100,20 @@
         }
     }
 
+    document.querySelector('.editor-header').onclick = function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-btn') == 'save'){
+            var stage = document.querySelector('.stage');
+            var blockHeader = stage.querySelector('.block-header');
+            var blockBody = stage.querySelector('.block-body');
+            var blockBottom = stage.querySelector('.block-bottom');
+            var cmp = stage.querySelectorAll('.cmp-wrapper');
+
+        }else if(element.getAttribute('data-btn') == 'preview'){
+
+        }
+    }
+
     document.querySelector('.positionPanel').onchange = function(e){
         var element = e.target || e.srcElement;
         var stage = document.querySelector('.stage');
@@ -311,7 +325,7 @@
     function insertText(container){
         var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
         var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+        var textHtml = '<div class="cmp-wrapper" data-type="text" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
                                     <div contenteditable="true" data-type="logo" class="cmpMain">文本</div>\
@@ -337,7 +351,7 @@
     function insertImage(container, src){
         var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
         var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper" data-editable="true" style="left:'+left+';top:'+top+';width:250px;height:150px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+        var textHtml = '<div class="cmp-wrapper" data-type="image" data-editable="true" style="left:'+left+';top:'+top+';width:250px;height:150px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
                                     <img class="cmpMain" style="width:100%;" src="'+src+'"/>\
@@ -362,14 +376,14 @@
         container.innerHTML += textHtml;
     }
 
-        /**
+    /**
      * @description 生成线条
      * @param {}
      */
     function insertLine(container){
         var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
         var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:2px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+        var textHtml = '<div class="cmp-wrapper" data-type="line" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:2px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
                                     <div style="background-color:#333;width:100%;" class="cmpMain"></div>\

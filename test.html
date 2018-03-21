@@ -7,10 +7,30 @@
     <link rel="stylesheet" type="text/css" href="./editor.css" />
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 </head>
+<style>
+    .parent1 {
+        height: 20px;
+        background: yellow;
+        margin-bottom: 20px;
+    }
+    .parent2 {
+        margin: 20px 0 30px;
+    }
+    .parent3 {
+        height: 20px;
+        background: green;
+        margin-top: 20px;
+    }
+    .child {
+        background: red;
+        height: 20px;
+        margin: 40px 0 30px;
+    }
+</style>
 <body style="margin:0;padding:0;height:100%;">
-    <!-- <div style="height:100%;width:100%;"> -->
-        <!-- <header style="background-color:red;color:#fff;height:40px;">
-        </header> -->
+    <!-- <div style="height:100%;width:100%;">
+        <header style="background-color:red;color:#fff;height:40px;">
+        </header>
         <div style="position:relative;min-height:100%;padding-bottom:100px;box-sizing:border-box;">
             <div>
                 <article style="margin:20px auto;width:800px;height:100px;background-color:yellow;"></article>
@@ -24,8 +44,25 @@
             </div>
             <footer style="background-color:blue;height:100px;width:100%;bottom:0;position:absolute;"></footer>
         </div>
-    <!-- </div> -->
+    </div> -->
+
+    <!-- <div class="parent1"></div>  
+    <div class="parent2">  
+        <div class="child"></div>
+        <div class="child"></div>
+        <div class="child"></div>
+    </div>  
+    <div class="parent3"></div>   -->
+
+    <div style="display:flex;width:800px;margin:0 auto;">
+        <div style="width:100%;background-color:red;">
+            <div style="height:900px;"></div>
+        </div>
+        <div style="width:100%;">
+            <div style="overflow:hidden;">
+                <div style="height:800px;background-color:yellow;"></div>
+            </div>
+        </div>
+    </div>
 </body>
-<script type="text/javascript" src="./helper.js"></script>
-<script type="text/javascript" src="./editor.js"></script>
 </html>
