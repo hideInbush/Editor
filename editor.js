@@ -109,8 +109,17 @@
             var blockBottom = stage.querySelector('.block-bottom');
             var cmp = stage.querySelectorAll('.cmp-wrapper');
 
-        }else if(element.getAttribute('data-btn') == 'preview'){
+            var cmps = [];
+            for(var i=0; i<cmp.length; i++){
+                cmps.push(cmp[i]);
+            }
 
+            var headerPosition = [0, parseFloat(window.getComputedStyle(blockHeader).height)];
+            var bodyPosition = [parseFloat(headerPosition[1]), parseFloat(headerPosition[1])+parseFloat(window.getComputedStyle(blockBody).height)];
+            var bottomPosition = [parseFloat(bodyPosition[1]), parseFloat(bodyPosition[1])+parseFloat(window.getComputedStyle(blockBottom).height)];
+            
+            debugger
+        }else if(element.getAttribute('data-btn') == 'preview'){
         }
     }
 
