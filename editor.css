@@ -181,8 +181,6 @@ ul,li,input{
     top: 38px;
 }
 .editor .workPlace .stage{
-    width: 480px;
-    height: 750px;
     top: 0px;
     position: absolute;
     background: #fff;

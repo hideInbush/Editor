@@ -118,6 +118,71 @@
             var bodyPosition = [parseFloat(headerPosition[1]), parseFloat(headerPosition[1])+parseFloat(window.getComputedStyle(blockBody).height)];
             var bottomPosition = [parseFloat(bodyPosition[1]), parseFloat(bodyPosition[1])+parseFloat(window.getComputedStyle(blockBottom).height)];
             
+            var headerCmp = [{
+                x: 0,
+                y: headerPosition[1],
+                width: blockHeader.style.width,
+                height: blockHeader.style.height,
+                line: [],
+                img: [],
+                text: []
+            }];
+            var bodyCmp = [{
+                x: 0,
+                y: bodyPosition[0],
+                width: blockBody.style.width,
+                height: blockBody.style.height,
+                line: [],
+                img: [],
+                text: []
+            }];
+            var bottomCmp = [{
+                x: 0,
+                y: bottomPosition[0],
+                width: blockBottom.style.width,
+                height: blockBottom.style.height,
+                line: [],
+                img: [],
+                text: []
+            }];
+
+            cmps.forEach(function(v){
+                var top = parseFloat(v.style.top);
+                if(top >= headerPosition[0] && top < headerPosition[1]){
+                    if(v.getAttribute('data-type') == 'img'){
+                        headerCmp[0].img.push(createJsonData(v));
+                    }else if(v.getAttribute('data-type') == 'text'){
+                        headerCmp[0].text.push(createJsonData(v));
+                    }else if(v.getAttribute('data-type') == 'line'){
+                        headerCmp[0].line.push(createJsonData(v));
+                    }
+                }else if(top >= bodyPosition[0] && top < bodyPosition[1]){
+                    if(v.getAttribute('data-type') == 'img'){
+                        bodyCmp[0].img.push(createJsonData(v));
+                    }else if(v.getAttribute('data-type') == 'text'){
+                        bodyCmp[0].text.push(createJsonData(v));
+                    }else if(v.getAttribute('data-type') == 'line'){
+                        bodyCmp[0].line.push(createJsonData(v));
+                    }
+                }else if(top >= bottomPosition[0] && top < bottomPosition[1]){
+                    if(v.getAttribute('data-type') == 'img'){
+                        bottomCmp[0].img.push(createJsonData(v));
+                    }else if(v.getAttribute('data-type') == 'text'){
+                        bottomCmp[0].text.push(createJsonData(v));
+                    }else if(v.getAttribute('data-type') == 'line'){
+                        bottomCmp[0].line.push(createJsonData(v));
+                    }
+                }
+            })
+
+            var bookdoc = [{
+                width: stage.style.width,
+                height: stage.style.height,
+                bookheader: headerCmp,
+                bookbody: bodyCmp,
+                bookbottom: bottomCmp
+            }];
+
             debugger
         }else if(element.getAttribute('data-btn') == 'preview'){
         }
@@ -136,6 +201,45 @@
         }else if(element.getAttribute('data-type') == 'h'){
             cmp.style.height = parseFloat(element.value) + 'px';
         }
+    }
+
+    /**
+     * @param {element} element 
+     */
+    function createJsonData(element){
+        var data;
+        if(element.getAttribute("data-type") == 'logo'){
+        }else if(element.getAttribute("data-type") == 'line'){
+            data = {
+                x: element.style.left,
+                y: element.style.top,
+                width: element.style.width,
+                height: element.style.height,
+                color: element.style.backgroundColor,
+            };
+        }else if(element.getAttribute("data-type") == 'img'){
+            data = {
+                x: element.style.left,
+                y: element.style.top,
+                width: element.style.width,
+                height: element.style.height,
+            };
+        }else if(element.getAttribute("data-type") == 'text'){
+            data = {
+                x: element.style.left,
+                y: element.style.top,
+                width: element.style.width,
+                height: element.style.height,
+                font_family: element.style.fontFamily,
+                font_size: element.style.fontSize,
+                font_weight: element.style.fontWeight,
+                font_color: element.style.color,
+                bgcolor: element.style.backgroundColor,
+                comment: element.querySelector('.cmpMain').innerText,
+            };
+        }else if(element.getAttribute("data-type") == 'bookno'){
+        }
+        return data;
     }
 
     /**
