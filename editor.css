@@ -256,6 +256,10 @@ ul,li,input{
     z-index: 999;
     -webkit-user-select: none;
     pointer-events: none;
+    border: 1px solid #fff;
+}
+.editor .workPlace .stage .cmp-wrapper:hover{
+    border: 1px solid #333;
 }
 .editor .workPlace .stage .cmp-wrapper .cmp-render{
     position: absolute;
@@ -504,4 +508,26 @@ ul,li,input{
 }
 .editor .detailBar .viewPanel .selectPanel{
     margin: 5px 20px;
+}
+
+.modal-menu{
+    overflow: hidden;
+    border-radius: 4px;
+    opacity: 0.9;
+    background-color: #fff;
+    box-shadow:0 2px 5px rgba(0, 0, 0, 0.5);
+    width: 85px;
+    padding: 5px 0;
+}
+.modal-menu ul{
+    overflow: hidden;
+}
+.modal-menu ul>li{
+    line-height: 30px;
+    text-indent: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.modal-menu ul>li:hover{
+    background-color: #ebebe7;
 }

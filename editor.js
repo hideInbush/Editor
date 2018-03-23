@@ -5,52 +5,67 @@
     document.querySelector('.stage').onmousedown = function(e){
         var element = e.target || e.srcElement;
 
-        if(element.className.indexOf('dot') > -1){
-            /**
-             * 判断是否在边缘的小正方形上
-             */
-            var blockFlag = element.getAttribute('data-blockflag');
-            if(blockFlag == 'true'){
-                var drag = _domHelper.findParentNodeByClass(element, 'block');
-            }else{
-                var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
-            }
-            if(drag.getAttribute('data-editable') == 'true'){
-                return;
-            }
-            resizeCmp(e, drag, blockFlag);
-        }else{
-            var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
-            if(drag.tagName.toLocaleLowerCase() == 'body'){
+        if(e.buttons == '1'){
+            if(element.className.indexOf('dot') > -1){
                 /**
-                 * @description 点击在空白处
+                 * 判断是否在边缘的小正方形上
                  */
-                var elements = document.querySelectorAll('.cmp-wrapper');
-                for(var i=0; i<elements.length; i++){
-                    if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
-                        elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
-                        elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
-                        elements[i].setAttribute('data-editable', 'false');
-                    }
+                var blockFlag = element.getAttribute('data-blockflag');
+                if(blockFlag == 'true'){
+                    var drag = _domHelper.findParentNodeByClass(element, 'block');
+                }else{
+                    var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
                 }
-                updateDetailBar(drag, 'clear');
-            }else{
                 if(drag.getAttribute('data-editable') == 'true'){
                     return;
                 }
-
-                var elements = document.querySelectorAll('.cmp-wrapper');
-                for(var i=0; i<elements.length; i++){
-                    if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
-                        elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
-                        elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
-                        elements[i].setAttribute('data-editable', 'false');
+                resizeCmp(e, drag, blockFlag);
+            }else{
+                var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
+                if(drag.tagName.toLocaleLowerCase() == 'body'){
+                    /**
+                     * @description 点击在空白处
+                     */
+                    var elements = document.querySelectorAll('.cmp-wrapper');
+                    for(var i=0; i<elements.length; i++){
+                        if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
+                            elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
+                            elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
+                            elements[i].setAttribute('data-editable', 'false');
+                        }
                     }
+
+                    document.querySelector('.modal-menu').style.display = 'none';
+                    
+                    updateDetailBar(drag, 'clear');
+                }else{
+                    if(drag.getAttribute('data-editable') == 'true'){
+                        return;
+                    }
+    
+                    var elements = document.querySelectorAll('.cmp-wrapper');
+                    for(var i=0; i<elements.length; i++){
+                        if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
+                            elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
+                            elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
+                            elements[i].setAttribute('data-editable', 'false');
+                        }
+                    }
+                    drag.querySelector('.cmp-operate').children[0].style.display = 'block';
+                    dragAndDrop(e, drag);
                 }
-                drag.querySelector('.cmp-operate').children[0].style.display = 'block';
-                dragAndDrop(e, drag);
+            }
+        }else if(e.buttons == '2'){
+            var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
+            if(drag.tagName.toLocaleLowerCase() != 'body'){
+                document.querySelector('.modal-menu').style.display = 'block';
+                document.querySelector('.modal-menu').style.left = e.pageX + 'px';
+                document.querySelector('.modal-menu').style.top = e.pageY + 'px';
+            }else{
+                document.querySelector('.modal-menu').style.display = 'none';
             }
         }
+        
     }
 
     document.querySelector('.stage').ondblclick = function(e){
@@ -100,7 +115,7 @@
         }
     }
 
-    document.querySelector('.editor-header').onclick = function(e){
+    document.querySelector('.editor-header').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.getAttribute('data-btn') == 'save'){
             var stage = document.querySelector('.stage');
@@ -149,7 +164,7 @@
             cmps.forEach(function(v){
                 var top = parseFloat(v.style.top);
                 if(top >= headerPosition[0] && top < headerPosition[1]){
-                    if(v.getAttribute('data-type') == 'img'){
+                    if(v.getAttribute('data-type') == 'image'){
                         headerCmp[0].img.push(createJsonData(v));
                     }else if(v.getAttribute('data-type') == 'text'){
                         headerCmp[0].text.push(createJsonData(v));
@@ -157,7 +172,7 @@
                         headerCmp[0].line.push(createJsonData(v));
                     }
                 }else if(top >= bodyPosition[0] && top < bodyPosition[1]){
-                    if(v.getAttribute('data-type') == 'img'){
+                    if(v.getAttribute('data-type') == 'image'){
                         bodyCmp[0].img.push(createJsonData(v));
                     }else if(v.getAttribute('data-type') == 'text'){
                         bodyCmp[0].text.push(createJsonData(v));
@@ -165,7 +180,7 @@
                         bodyCmp[0].line.push(createJsonData(v));
                     }
                 }else if(top >= bottomPosition[0] && top < bottomPosition[1]){
-                    if(v.getAttribute('data-type') == 'img'){
+                    if(v.getAttribute('data-type') == 'image'){
                         bottomCmp[0].img.push(createJsonData(v));
                     }else if(v.getAttribute('data-type') == 'text'){
                         bottomCmp[0].text.push(createJsonData(v));
@@ -186,7 +201,7 @@
             debugger
         }else if(element.getAttribute('data-btn') == 'preview'){
         }
-    }
+    })
 
     document.querySelector('.positionPanel').onchange = function(e){
         var element = e.target || e.srcElement;
@@ -204,6 +219,12 @@
     }
 
     /**
+     * 禁止右击事件
+     */
+    document.oncontextmenu = function(){
+    　　return false;
+    }
+    /**
      * @param {element} element 
      */
     function createJsonData(element){
@@ -217,7 +238,7 @@
                 height: element.style.height,
                 color: element.style.backgroundColor,
             };
-        }else if(element.getAttribute("data-type") == 'img'){
+        }else if(element.getAttribute("data-type") == 'image'){
             data = {
                 x: element.style.left,
                 y: element.style.top,
@@ -496,13 +517,13 @@
     function insertLine(container){
         var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
         var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper" data-type="line" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:2px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+        var textHtml = '<div class="cmp-wrapper" data-type="line" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:10px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
-                                    <div style="background-color:#333;width:100%;" class="cmpMain"></div>\
+                                    <div style="background-color:#333;width:100%;height:2px;position:absolute;top:50%;transform:translateY(-50%);" class="cmpMain"></div>\
                                 </div>\
                             </div>\
-                            <div class="cmp-operate checked" data-type="logo" style="width:100%;height:100%;">\
+                            <div class="cmp-operate checked" style="width:100%;height:100%;">\
                                 <div style="display: block;">\
                                     <div class="borderLine"></div>\
                                     <div class="borderLine dashed"></div>\
