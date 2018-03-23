@@ -28,6 +28,10 @@
                      */
                     var elements = document.querySelectorAll('.cmp-wrapper');
                     for(var i=0; i<elements.length; i++){
+                        if(elements[i].className.indexOf('checked') > -1){
+                            elements[i].className = elements[i].className.replace(/checked/g,'');
+                        }
+
                         if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
                             elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
                             elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
@@ -51,6 +55,7 @@
                             elements[i].setAttribute('data-editable', 'false');
                         }
                     }
+                    drag.className += ' checked';
                     drag.querySelector('.cmp-operate').children[0].style.display = 'block';
                     dragAndDrop(e, drag);
                 }
@@ -61,6 +66,9 @@
                 document.querySelector('.modal-menu').style.display = 'block';
                 document.querySelector('.modal-menu').style.left = e.pageX + 'px';
                 document.querySelector('.modal-menu').style.top = e.pageY + 'px';
+
+                drag.className += ' checked';
+                drag.querySelector('.cmp-operate').children[0].style.display = 'block';
             }else{
                 document.querySelector('.modal-menu').style.display = 'none';
             }
@@ -95,6 +103,10 @@
             element.parentNode.parentNode.getAttribute('data-type') == 'text'){
             
             insertText(document.querySelector('.stage').children[3]);
+
+            document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
+            document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
+
         }else if(element.getAttribute('data-type') == 'image' || 
                 element.parentNode.getAttribute('data-type') == 'image' ||
                 element.parentNode.parentNode.getAttribute('data-type') == 'image'){
@@ -102,11 +114,17 @@
             var lib = document.querySelector('.res-panel-lib');
             lib.querySelector('.active').className = lib.querySelector('.active').className.replace('active','');
             lib.children[num].className += ' active';
+
+            document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
+            document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
         }else if(element.getAttribute('data-type') == 'line' || 
                 element.parentNode.getAttribute('data-type') == 'line' ||
                 element.parentNode.parentNode.getAttribute('data-type') == 'line'){
             
             insertLine(document.querySelector('.stage').children[3]);
+
+            document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
+            document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
         }else if(element.getAttribute('data-type') == 'image-item' ||
                 element.parentNode.getAttribute('data-type') == 'image-item'){
             
@@ -218,6 +236,15 @@
         }
     }
 
+    document.querySelector('.modal-menu').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.tagName.toLocaleLowerCase() == 'li'){
+            if(element.getAttribute('data-btn') == 'delete'){
+                document.querySelector('.stage').querySelector('.checked').remove();
+            }
+        }
+        document.querySelector('.modal-menu').style.display = 'none';
+    });
     /**
      * 禁止右击事件
      */
@@ -459,7 +486,7 @@
     function insertText(container){
         var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
         var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper" data-type="text" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+        var textHtml = '<div class="cmp-wrapper checked" data-type="text" data-editable="false" style="left:'+left+';top:'+top+';width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
                                     <div contenteditable="true" data-type="logo" class="cmpMain">文本</div>\
@@ -485,7 +512,7 @@
     function insertImage(container, src){
         var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
         var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper" data-type="image" data-editable="true" style="left:'+left+';top:'+top+';width:250px;height:150px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+        var textHtml = '<div class="cmp-wrapper checked" data-type="image" data-editable="false" style="left:'+left+';top:'+top+';width:250px;height:150px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
                                     <img class="cmpMain" style="width:100%;" src="'+src+'"/>\
@@ -517,7 +544,7 @@
     function insertLine(container){
         var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
         var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper" data-type="line" data-editable="true" style="left:'+left+';top:'+top+';width:100px;height:10px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+        var textHtml = '<div class="cmp-wrapper checked" data-type="line" data-editable="false" style="left:'+left+';top:'+top+';width:100px;height:10px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
                                     <div style="background-color:#333;width:100%;height:2px;position:absolute;top:50%;transform:translateY(-50%);" class="cmpMain"></div>\
