@@ -9,6 +9,7 @@
 </head>
 <body class="editor">
     <div class="editor-header">
+        <a data-btn="login" class="btn save" style="margin:5px;">登陆</a>
         <a class="title">我的富媒体作品</a>
         <div class="right">
             <a data-btn="save" class="btn save">保存</a>
@@ -17,18 +18,21 @@
     </div>
     <div class="sideBar">
         <ul class="res-panel-nav">
-            <li data-id="0" >版式</li>
+            <li data-id="0" >
+                <i class="fa fa-clone" aria-hidden="true"></i>
+                版式
+            </li>
             <li data-id="1" class="active">
                 <i class="fa fa-picture-o" aria-hidden="true"></i>
                 素材
             </li>
-            <li data-id="2">
+            <li data-id="3">
                 <i class="fa fa-cloud-upload" aria-hidden="true"></i>
                 上传
             </li>
         </ul>
         <div class="res-panel-lib">
-            <div></div>
+            <div style="background-color:aqua;height:100%;"></div>
             <div class="active">
                 <ul class="resource">
                     <li class="icons icons-font" data-type="text">
@@ -52,18 +56,23 @@
                 </ul>
             </div>
             <div style="overflow:hidden;">
+                <div class="breadNav">
+                    <a>返回素材</a>
+                    <span> -> </span>
+                    <span>图片</span>
+                </div>
                 <ul class="resource" style="overflow:hidden;">
                     <li class="image" data-type="image-item" data-src="./1.jpg">
                         <img src="./1.jpg"/>
                     </li>
                 </ul>
             </div>
-            <div></div>
+            <div style="background-color:pink;height:100%;"></div>
         </div>
     </div>
     <div class="workPlace">
         <div class="stage" style="width:480px;height:750px;">
-            <div class="block block-header active" style="width:480px;height:150px;">
+            <div class="block block-header block-active" style="width:480px;height:150px;">
                 <div class="cmp-render" style="width:0;height:0;">
                 </div>
                 <div class="cmp-operate" data-type="logo" style="width:100%;height:100%;top:0;left:0;">
@@ -100,7 +109,7 @@
             </div>
 
             <div style="position: absolute;width:100%;height:100%;top:0;">
-                <div class="cmp-wrapper checked" data-type="text" data-editable="false" style="left:50px;top:60px;width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:'SimSun';font-weight:200;font-size:14px;">
+                <div class="cmp-wrapper" data-type="text" data-editable="false" style="left:50px;top:60px;width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:'SimSun';font-weight:200;font-size:14px;">
                     <div class="cmp-render" style="width:100%;height:100%;">
                         <div class="cmpScaleArea">
                             <div contenteditable="false" data-type="text" class="cmpMain">请输入logo文字</div>
@@ -112,6 +121,8 @@
                             <div class="borderLine dashed"></div>
                             <div class="dot dot-e" data-direction="right"></div>
                             <div class="dot dot-w" data-direction="left"></div>
+                            <!-- <div class="dot dot-n" data-direction="top"></div>
+                            <div class="dot dot-s" data-direction="bottom"></div> -->
                         </div>
                     </div>
                 </div>
@@ -134,7 +145,7 @@
             <li>
                 <div class="viewPanel"></div>
             </li>
-            <li>
+            <li style="display:none;">
                 <a class="title">
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                     <span>文字设置</span>
@@ -143,15 +154,15 @@
                     <li>
                         <span>背景色</span>
                         <div class="colorPanel">
-                            <span class="colorSample"></span>
-                            <input type="text" readonly="readonly"/>
+                            <input data-type="bgColor" class="colorSample" type="color"/>
+                            <input class="colorValue" type="text" readonly="readonly"/>
                         </div>
                     </li>
                     <li>
                         <span>颜色</span>
                         <div class="colorPanel">
-                            <span class="colorSample"></span>
-                            <input type="text" readonly="readonly"/>
+                            <input data-type="color" class="colorSample" type="color"/>
+                            <input class="colorValue" type="text" readonly="readonly"/>
                         </div>
                     </li>
                     <li class="select-font">
@@ -206,6 +217,7 @@
         </ul>
     </div>
 </body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="./helper.js"></script>
 <script type="text/javascript" src="./editor.js"></script>
 </html>

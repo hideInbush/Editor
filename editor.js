@@ -73,7 +73,6 @@
                 document.querySelector('.modal-menu').style.display = 'none';
             }
         }
-        
     }
 
     document.querySelector('.stage').ondblclick = function(e){
@@ -85,18 +84,23 @@
         }
     }
 
-    document.querySelector('.sideBar').querySelector('.res-panel-nav').onclick = function(e){
+    document.querySelector('.sideBar').querySelector('.res-panel-nav').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
-        if(element.getAttribute('data-id')){
-            var num = parseInt(element.getAttribute('data-id'));
-            document.querySelector('.sideBar').querySelector('.res-panel-nav').querySelector('.active').className = document.querySelector('.sideBar').querySelector('.res-panel-nav').querySelector('.active').className.replace('active','');
-            element.className += ' active';
-            document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.active').className = document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.active').className.replace('active','');
-            document.querySelector('.sideBar').querySelector('.res-panel-lib').children[num].className += ' active';
-        }
-    }
+        if(element.getAttribute('data-id') || element.parentNode.getAttribute('data-id')){
+            element.parentNode.getAttribute('data-id') && (element = element.parentNode);
+            var num = parseInt(element.getAttribute('data-id') || element.parentNode.getAttribute('data-id'));
+            var nav_active = document.querySelector('.sideBar').querySelector('.res-panel-nav').querySelector('.active');
+            $(nav_active).removeClass('active');
+            $(element).addClass('active');
 
-    document.querySelector('.sideBar').querySelector('.res-panel-lib').onclick = function(e){
+            var lib_current = document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.active');
+            var lib_target = document.querySelector('.sideBar').querySelector('.res-panel-lib').children[num];
+            $(lib_current).removeClass('active');
+            $(lib_target).addClass('active');
+        }
+    });
+
+    document.querySelector('.sideBar').querySelector('.res-panel-lib').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.getAttribute('data-type') == 'text' || 
             element.parentNode.getAttribute('data-type') == 'text' ||
@@ -106,7 +110,6 @@
 
             document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
             document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
-
         }else if(element.getAttribute('data-type') == 'image' || 
                 element.parentNode.getAttribute('data-type') == 'image' ||
                 element.parentNode.parentNode.getAttribute('data-type') == 'image'){
@@ -131,7 +134,14 @@
             var src = element.getAttribute('data-src') || element.parentNode.getAttribute('data-src');
             insertImage(document.querySelector('.stage').children[3], src);
         }
-    }
+    });
+
+    document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.breadNav').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.tagName == 'A'){
+            document.querySelector('.sideBar').querySelector('.res-panel-nav').children[1].click();
+        }
+    });
 
     document.querySelector('.editor-header').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
@@ -218,10 +228,13 @@
 
             debugger
         }else if(element.getAttribute('data-btn') == 'preview'){
+        }else if(element.getAttribute('data-btn') == 'login'){
+            //automatic login 
+            
         }
-    })
+    });
 
-    document.querySelector('.positionPanel').onchange = function(e){
+    document.querySelector('.positionPanel').addEventListener('change', function(e){
         var element = e.target || e.srcElement;
         var stage = document.querySelector('.stage');
         var cmp = stage.querySelector('.checked').parentNode;
@@ -234,7 +247,7 @@
         }else if(element.getAttribute('data-type') == 'h'){
             cmp.style.height = parseFloat(element.value) + 'px';
         }
-    }
+    });
 
     document.querySelector('.modal-menu').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
@@ -245,6 +258,23 @@
         }
         document.querySelector('.modal-menu').style.display = 'none';
     });
+
+    /**
+     * 取色器
+     */
+    var colorPickers = document.querySelectorAll('.colorSample');
+    for(var i=0; i<colorPickers.length; i++){
+        colorPickers[i].addEventListener('change', function(e){
+            var element = this;
+            element.nextElementSibling.value = element.value;
+            if(element.getAttribute('data-type') == 'bgColor'){
+                document.querySelector('.stage').querySelector('.checked').style.backgroundColor = element.value;
+            }else if(element.getAttribute('data-type') == 'color'){
+                document.querySelector('.stage').querySelector('.checked').style.color = element.value;
+            }
+        });
+    }
+    
     /**
      * 禁止右击事件
      */
@@ -662,29 +692,31 @@
                 input.value = element.getAttribute('data-name');
 
                 var stage = document.querySelector('.stage');
-                var cmp = stage.querySelector('.checked').parentNode;
 
                 if(type == 'block'){
                     var header = stage.querySelector('.block-header');
                     var body = stage.querySelector('.block-body');
                     var bottom = stage.querySelector('.block-bottom');
                     
-                    stage.querySelector('.active').className = document.querySelector('.stage').querySelector('.active').className.replace('active', '');
+                    stage.querySelector('.block-active').className = document.querySelector('.stage').querySelector('.block-active').className.replace('block-active', '');
                     if(input.value == '头部编辑'){
-                        header.className += ' active';
+                        header.className += ' block-active';
                         updateDetailBar(header, 'block');
                     }else if(input.value == '正文编辑'){
-                        body.className += ' active';
+                        body.className += ' block-active';
                         updateDetailBar(body, 'block');
                     }else if(input.value == '尾部编辑'){
-                        bottom.className += ' active';
+                        bottom.className += ' block-active';
                         updateDetailBar(bottom, 'block');
                     }
                 }else if(type == 'font'){
+                    var cmp = stage.querySelector('.checked');
                     cmp.style.fontFamily = fontMap_2[input.value] || input.value;
                 }else if(type == 'size'){
+                    var cmp = stage.querySelector('.checked');
                     cmp.style.fontSize = parseInt(input.value) + 'px';
                 }else if(type == 'weight'){
+                    var cmp = stage.querySelector('.checked');
                     cmp.style.fontWeight = input.value;
                 }
             }
@@ -724,9 +756,9 @@
         /**
          * clear all status
          */
-        bgColorPanel.children[0].style.backgroundColor = '';
+        bgColorPanel.children[0].value = '';
         bgColorPanel.children[1].value = '';
-        fontColorPanel.children[0].style.backgroundColor = '';
+        fontColorPanel.children[0].value = '';
         fontColorPanel.children[1].value = '';
         fontPanel.querySelector('input').value = '';
         sizePanel.querySelector('input').value = '';
@@ -737,14 +769,20 @@
         sizeW.children[1].value = '';
         sizeH.children[1].value = '';
 
+        if(element.getAttribute('data-type') == 'text'){
+            detailBar.children[0].children[1].style.display = 'block';
+        }else{
+            detailBar.children[0].children[1].style.display = 'none';
+        }
+
         if(type == 'block'){
             sizeW.children[1].value = parseInt(element.style.width || window.getComputedStyle(element).width);
             sizeH.children[1].value = parseInt(element.style.height || window.getComputedStyle(element).height) ;
         }else if(type == 'clear'){
         }else{
-            bgColorPanel.children[0].style.backgroundColor = element.style.backgroundColor;
+            bgColorPanel.children[0].value = _colorHelper.colorHex(element.style.backgroundColor);
             bgColorPanel.children[1].value = _colorHelper.colorHex(element.style.backgroundColor);
-            fontColorPanel.children[0].style.backgroundColor = element.style.color;
+            fontColorPanel.children[0].value = _colorHelper.colorHex(element.style.color);
             fontColorPanel.children[1].value = _colorHelper.colorHex(element.style.color);
             fontPanel.querySelector('input').value = fontMap_1[window.getComputedStyle(element).fontFamily] || window.getComputedStyle(element).fontFamily;
             sizePanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontSize);

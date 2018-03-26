@@ -114,6 +114,16 @@ ul,li,input{
 .editor .sideBar .res-panel-lib .active{
     display: block;
 }
+.editor .sideBar .res-panel-lib .breadNav{
+    line-height: 14px;
+    font-size: 14px;
+    color: #fff;
+    text-indent:10px;
+    margin-top: 10px;
+}
+.editor .sideBar .res-panel-lib .breadNav a:hover{
+    color: #00c4cd;
+}
 .editor .sideBar .res-panel-lib .resource .icons{
     display: inline-block;
     width: 50px;
@@ -196,7 +206,7 @@ ul,li,input{
 .editor .workPlace .stage .block .cmp-operate{
     cursor: default;
 }
-.editor .workPlace .stage .active{
+.editor .workPlace .stage .block-active{
     z-index: 99;
 }
 .editor .workPlace .stage .block-header{
@@ -219,12 +229,12 @@ ul,li,input{
 .editor .workPlace .stage .block-bottom .cmp-operate{
     display: none;
 }
-.editor .workPlace .stage .block-header.active .cmp-operate,
-.editor .workPlace .stage .block-body.active .cmp-operate,
-.editor .workPlace .stage .block-bottom.active .cmp-operate{
+.editor .workPlace .stage .block-header.block-active .cmp-operate,
+.editor .workPlace .stage .block-body.block-active .cmp-operate,
+.editor .workPlace .stage .block-bottom.block-active .cmp-operate{
     display: block;
 }
-.editor .workPlace .stage .active .dot-s{
+.editor .workPlace .stage .block-active .dot-s{
     width: 5px;
     height: 5px;
     top: 100%;
@@ -235,7 +245,7 @@ ul,li,input{
     transform: translate(-50%, -50%);
     display: inline-block;
 }
-.editor .workPlace .stage .active .dot-n{
+.editor .workPlace .stage .block-active .dot-n{
     width: 5px;
     height: 5px;
     top: 0;
@@ -434,7 +444,7 @@ ul,li,input{
     border: 1px solid #999;
     display: inline-block;
 }
-.editor .detailBar ul li li .colorPanel input{
+.editor .detailBar ul li li .colorPanel .colorValue{
     margin: 0;
     padding: 0;
     display: inline-block;
