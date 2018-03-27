@@ -2,7 +2,7 @@
     /**
      * @description 拖动 + 变换
      */
-    document.querySelector('.stage').onmousedown = function(e){
+    document.querySelector('.stage').addEventListener('mousedown', function(e){
         var element = e.target || e.srcElement;
 
         if(e.buttons == '1'){
@@ -62,6 +62,20 @@
             }
         }else if(e.buttons == '2'){
             var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
+
+            var elements = document.querySelectorAll('.cmp-wrapper');
+            for(var i=0; i<elements.length; i++){
+                if(elements[i].className.indexOf('checked') > -1){
+                    elements[i].className = elements[i].className.replace(/checked/g,'');
+                }
+
+                if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
+                    elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
+                    elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
+                    elements[i].setAttribute('data-editable', 'false');
+                }
+            }
+
             if(drag.tagName.toLocaleLowerCase() != 'body'){
                 document.querySelector('.modal-menu').style.display = 'block';
                 document.querySelector('.modal-menu').style.left = e.pageX + 'px';
@@ -73,7 +87,7 @@
                 document.querySelector('.modal-menu').style.display = 'none';
             }
         }
-    }
+    });
 
     document.querySelector('.stage').ondblclick = function(e){
         var element = e.target || e.srcElement;
@@ -82,7 +96,7 @@
             var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
             drag.setAttribute('data-editable', 'true');
         }
-    }
+    };
 
     document.querySelector('.sideBar').querySelector('.res-panel-nav').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
@@ -230,7 +244,18 @@
         }else if(element.getAttribute('data-btn') == 'preview'){
         }else if(element.getAttribute('data-btn') == 'login'){
             //automatic login 
-            
+            ds.sysInit();
+            var obj = {
+                succFunc: function(data){
+                    var result = JSON.parse(data);
+                    debugger
+                },
+                errFunc: function(data){
+                    var result = JSON.parse(data);
+                    debugger
+                }
+            };
+            ds.login(obj);
         }
     });
 
