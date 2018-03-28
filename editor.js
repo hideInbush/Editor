@@ -89,14 +89,14 @@
         }
     });
 
-    document.querySelector('.stage').ondblclick = function(e){
+    document.querySelector('.stage').addEventListener('dblclick', function(e){
         var element = e.target || e.srcElement;
-        if(element.getAttribute('contenteditable') == 'false'){
-            element.setAttribute('contenteditable', 'true');
-            var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
-            drag.setAttribute('data-editable', 'true');
+        element = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
+        if(element.getAttribute('data-editable') == 'false' && element.getAttribute('data-type') == 'text'){
+            element.setAttribute('data-editable', 'true');
+            element.querySelector('.cmpScaleArea').children[0].setAttribute('contenteditable', 'true');
         }
-    };
+    })
 
     document.querySelector('.sideBar').querySelector('.res-panel-nav').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
@@ -120,10 +120,11 @@
             element.parentNode.getAttribute('data-type') == 'text' ||
             element.parentNode.parentNode.getAttribute('data-type') == 'text'){
             
+            if(document.querySelector('.stage').querySelector('.checked')){
+                document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
+                document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
+            }
             insertText(document.querySelector('.stage').children[3]);
-
-            document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
-            document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
         }else if(element.getAttribute('data-type') == 'image' || 
                 element.parentNode.getAttribute('data-type') == 'image' ||
                 element.parentNode.parentNode.getAttribute('data-type') == 'image'){
@@ -132,20 +133,24 @@
             lib.querySelector('.active').className = lib.querySelector('.active').className.replace('active','');
             lib.children[num].className += ' active';
 
-            document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
-            document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
         }else if(element.getAttribute('data-type') == 'line' || 
                 element.parentNode.getAttribute('data-type') == 'line' ||
                 element.parentNode.parentNode.getAttribute('data-type') == 'line'){
             
+            if(document.querySelector('.stage').querySelector('.checked')){
+                document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
+                document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
+            }
             insertLine(document.querySelector('.stage').children[3]);
-
-            document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
-            document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
         }else if(element.getAttribute('data-type') == 'image-item' ||
                 element.parentNode.getAttribute('data-type') == 'image-item'){
             
             var src = element.getAttribute('data-src') || element.parentNode.getAttribute('data-src');
+
+            if(document.querySelector('.stage').querySelector('.checked')){
+                document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
+                document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
+            }
             insertImage(document.querySelector('.stage').children[3], src);
         }
     });
@@ -171,9 +176,9 @@
                 cmps.push(cmp[i]);
             }
 
-            var headerPosition = [0, parseFloat(window.getComputedStyle(blockHeader).height)];
-            var bodyPosition = [parseFloat(headerPosition[1]), parseFloat(headerPosition[1])+parseFloat(window.getComputedStyle(blockBody).height)];
-            var bottomPosition = [parseFloat(bodyPosition[1]), parseFloat(bodyPosition[1])+parseFloat(window.getComputedStyle(blockBottom).height)];
+            var headerPosition = [0, parseFloat(blockHeader.style.height)];
+            var bodyPosition = [parseFloat(headerPosition[1]), parseFloat(headerPosition[1])+parseFloat(blockBody.style.height)];
+            var bottomPosition = [parseFloat(bodyPosition[1]), parseFloat(bodyPosition[1])+parseFloat(blockBottom.style.height)];
             
             var headerCmp = [{
                 x: 0,
@@ -241,21 +246,159 @@
             }];
 
             debugger
+
+            /**
+             * 取新模板编号
+             */
+            var obj = {
+                succFunc: function(result){
+                    if(result.success == '1'){
+                        ds.modelId = result.modelId;
+                    }else{
+                        alert('取新模板编号失败！');
+                    }
+                },
+                errFunc: function(result){
+                    alert('取新模板编号失败！');
+                }
+            };
+            // ds.blankModel(obj);
+
+            /**
+             * 保存模板
+             */
+            var obj = {
+                succFunc: function(result){
+                    if(result.success == '1'){
+                        alert('保存模板成功！');
+                    }else{
+                        alert('保存模板失败！');
+                    }
+                },
+                errFunc: function(result){
+                    alert('保存模板失败！');
+                }
+            };
+            // ds.saveModel(bookdoc, obj);
+
+
+
         }else if(element.getAttribute('data-btn') == 'preview'){
+            /**
+             * 查询简图
+             */
+            var obj = {
+                succFunc: function(result){
+                    debugger
+                },
+                errFunc: function(result){
+                    alert('读取缩略图失败！');
+                }
+            };
+            ds.modelId = 'M4';
+            ds.queryPrivateModelIcon(obj);
         }else if(element.getAttribute('data-btn') == 'login'){
             //automatic login 
             ds.sysInit();
             var obj = {
-                succFunc: function(data){
-                    var result = JSON.parse(data);
-                    debugger
+                succFunc: function(result){
+                    if(result.success == '1'){
+                        alert('登陆成功！');
+                        ds.accountNo = result.accountNo;
+                    }else{
+                        alert('登陆失败！');
+                    }
                 },
-                errFunc: function(data){
-                    var result = JSON.parse(data);
-                    debugger
+                errFunc: function(result){
+                    alert('登陆失败！');
                 }
             };
             ds.login(obj);
+        }else if(element.getAttribute('data-btn') == 'readList'){
+            var obj = {
+                succFunc: function(result){
+                    debugger
+                },
+                errFunc: function(result){
+                    alert('获取模板列表失败！');
+                }
+            };
+            ds.queryPrivateModelAll(obj);
+        }else if(element.getAttribute('data-btn') == 'readSingle'){
+            var obj = {
+                succFunc: function(result){
+                    var bookdoc = result.bookdoc[0];
+
+                    var stage = document.querySelector('.stage');
+                    var blockHeader = stage.querySelector('.block-header'); 
+                    var blockBody = stage.querySelector('.block-body'); 
+                    var blockBottom = stage.querySelector('.block-bottom'); 
+
+                    blockHeader.style.height = bookdoc['bookheader'][0]['height'];
+                    blockBody.style.height = bookdoc['bookbody'][0]['height'];
+                    blockBottom.style.height = bookdoc['bookbottom'][0]['height'];
+                    
+
+                    var cmps = [];
+                    var cmpTypes = ['logo', 'line', 'img', 'text', 'bookno'];
+                    for(var i=0; i<cmpTypes.length; i++){
+                        var arr = bookdoc['bookheader'][0][cmpTypes[i]];
+                        if(arr){
+                            arr.forEach(function(v){
+                                v.cmpType = cmpTypes[i];
+                            })
+                            cmps = cmps.concat(arr);
+                        }
+                    }
+                    for(var i=0; i<cmpTypes.length; i++){
+                        var arr = bookdoc['bookbody'][0][cmpTypes[i]];
+                        if(arr){
+                            arr.forEach(function(v){
+                                v.cmpType = cmpTypes[i];
+                            })
+                            cmps = cmps.concat(arr);
+                        }
+                    }
+                    for(var i=0; i<cmpTypes.length; i++){
+                        var arr = bookdoc['bookbottom'][0][cmpTypes[i]];
+                        if(arr){
+                            arr.forEach(function(v){
+                                v.cmpType = cmpTypes[i];
+                            })
+                            cmps = cmps.concat(arr);
+                        }
+                    }
+                    
+                    var cmpsPanel = stage.children[3];
+                    cmpsPanel.innerHTML = '';
+
+                    cmps.forEach(function(v){
+                        if(v.cmpType == 'text'){
+                            insertText(cmpsPanel, v);
+                        }else if(v.cmpType == 'img'){
+                            insertImage(cmpsPanel, '', v);
+                        }else if(v.cmpType == 'line'){
+                            insertLine(cmpsPanel, v);
+                        }
+                    })
+                },
+                errFunc: function(result){
+                    alert('读取模版信息失败');
+                }
+            };
+            ds.modelId = 'M4';
+            ds.readModel(obj);
+        }else if(element.getAttribute('data-btn') == 'delete'){
+            var obj = {
+                succFunc: function(result){
+                    debugger
+                },
+                errFunc: function(result){
+                    alert('删除模板失败！');
+                }
+            };
+            ds.modelId = '';
+            ds.deleteModel(obj);
         }
     });
 
@@ -314,30 +457,31 @@
         if(element.getAttribute("data-type") == 'logo'){
         }else if(element.getAttribute("data-type") == 'line'){
             data = {
-                x: element.style.left,
-                y: element.style.top,
+                x: parseFloat(element.style.left),
+                y: parseFloat(element.style.top),
                 width: element.style.width,
-                height: element.style.height,
-                color: element.style.backgroundColor,
+                height: element.querySelector('.cmpScaleArea').children[0].style.height,
+                color: _colorHelper.colorHex(element.querySelector('.cmpScaleArea').children[0].style.backgroundColor),
             };
         }else if(element.getAttribute("data-type") == 'image'){
             data = {
-                x: element.style.left,
-                y: element.style.top,
+                x: parseFloat(element.style.left),
+                y: parseFloat(element.style.top),
                 width: element.style.width,
                 height: element.style.height,
+                src: element.querySelector('.cmpScaleArea').children[0].src,
             };
         }else if(element.getAttribute("data-type") == 'text'){
             data = {
-                x: element.style.left,
-                y: element.style.top,
+                x: parseFloat(element.style.left),
+                y: parseFloat(element.style.top),
                 width: element.style.width,
-                height: element.style.height,
+                height: window.getComputedStyle(element).height,
                 font_family: element.style.fontFamily,
                 font_size: element.style.fontSize,
                 font_weight: element.style.fontWeight,
-                font_color: element.style.color,
-                bgcolor: element.style.backgroundColor,
+                font_color: _colorHelper.colorHex(element.style.color),
+                bgcolor: _colorHelper.colorHex(element.style.backgroundColor),
                 comment: element.querySelector('.cmpMain').innerText,
             };
         }else if(element.getAttribute("data-type") == 'bookno'){
@@ -359,14 +503,13 @@
         var e = e || window.event; //兼容ie浏览器  
         var target = e.target || e.srcElement,
             direction = target.getAttribute("data-direction");
-        // var cmpDrawWrapper = target.parentNode.parentNode.parentNode;
         var cmpDrawWrapper = element;
         var oldX = e.clientX,
             oldY = e.clientY;
-        var oBoxW = parseFloat(window.getComputedStyle(cmpDrawWrapper).width),
-            oBoxH = parseFloat(window.getComputedStyle(cmpDrawWrapper).height),
-            oBoxL = parseFloat(window.getComputedStyle(cmpDrawWrapper).left),
-            oBoxT = parseFloat(window.getComputedStyle(cmpDrawWrapper).top);
+        var oBoxW = parseFloat(cmpDrawWrapper.style.width),
+            oBoxH = parseFloat(cmpDrawWrapper.style.height),
+            oBoxL = parseFloat(cmpDrawWrapper.style.left),
+            oBoxT = parseFloat(cmpDrawWrapper.style.top);
         var cmpRender = cmpDrawWrapper.children[0],
             cmpOperate = cmpDrawWrapper.children[1];
         var newW = oBoxW,
@@ -538,16 +681,46 @@
      * @description 生成文本
      * @param {}
      */
-    function insertText(container){
-        var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
-        var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper checked" data-type="text" data-editable="false" style="left:'+left+';top:'+top+';width:100px;height:20px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
-                            <div class="cmp-render" style="width:100%;height:100%;">\
-                                <div class="cmpScaleArea">\
-                                    <div contenteditable="true" data-type="logo" class="cmpMain">文本</div>\
+    function insertText(container, data){
+        var left = (parseInt(container.parentNode.style.width) / 2 - 50) + 'px';
+        var top = parseInt(container.parentNode.style.height) / 2 + 'px';
+        var width = '100px';
+        var height = '20px';
+        var color = '#ff0000';
+        var backgroundColor = '#ffffff';
+        var fontFamily = 'SimSun';
+        var fontSize = '14px';
+        var fontWeight = '200';
+        var text = '请输入文字';
+        if(data){
+            left = data.x + 'px';
+            top = data.y + 'px';
+            width = data.width;
+            height = data.height;
+            color = data.font_color;
+            backgroundColor = data.bgcolor;
+            fontFamily = data.font_family;
+            fontSize = data.font_size;
+            fontWeight = data.font_weight;
+            text = data.comment;
+        }
+
+        var textHtml = '<div class="cmp-wrapper checked" data-type="text" data-editable="false"\
+                         style="left:'+left+';\
+                                top:'+top+';\
+                                width:'+width+';\
+                                height:'+height+';\
+                                color:'+color+';\
+                                background-color:'+backgroundColor+';\
+                                font-family:'+fontFamily+';\
+                                font-size:"'+fontSize+'"\
+                                font-weight:'+fontWeight+';">\
+                            <div class="cmp-render" style="width:100%;position:relative;z-index:9;">\
+                                <div class="cmpScaleArea" style="height:auto;">\
+                                    <div data-type="text" class="cmpMain" style="word-break:break-all;z-index:9999;">'+text+'</div>\
                                 </div>\
                             </div>\
-                            <div class="cmp-operate checked" data-type="logo" style="width:100%;height:100%;">\
+                            <div class="cmp-operate" style="width:100%;height:100%;">\
                                 <div style="display: block;">\
                                     <div class="borderLine"></div>\
                                     <div class="borderLine dashed"></div>\
@@ -564,16 +737,31 @@
      * @description 生成图片
      * @param {}
      */
-    function insertImage(container, src){
-        var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
-        var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper checked" data-type="image" data-editable="false" style="left:'+left+';top:'+top+';width:250px;height:150px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+    function insertImage(container, src, data){
+        var left = (parseInt(container.parentNode.style.width) / 2 - 100) + 'px';
+        var top = parseInt(container.parentNode.style.height) / 2 + 'px';
+
+        var width = '250px';
+        var height = '150px';
+        if(data){
+            left = data.x + 'px';
+            top = data.y + 'px';
+            width = data.width;
+            height = data.height;
+            src = data.src;
+        }
+
+        var textHtml = '<div class="cmp-wrapper checked" data-type="image" data-editable="false"\
+                            style="left:'+left+';\
+                                    top:'+top+';\
+                                    width:'+width+';\
+                                    height:'+height+';">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
-                                    <img class="cmpMain" style="width:100%;" src="'+src+'"/>\
+                                    <img class="cmpMain" style="width:100%;height:100%;" src="'+src+'"/>\
                                 </div>\
                             </div>\
-                            <div class="cmp-operate checked" data-type="logo" style="width:100%;height:100%;">\
+                            <div class="cmp-operate" data-type="logo" style="width:100%;height:100%;">\
                                 <div style="display: block;">\
                                     <div class="borderLine"></div>\
                                     <div class="borderLine dashed"></div>\
@@ -596,16 +784,32 @@
      * @description 生成线条
      * @param {}
      */
-    function insertLine(container){
-        var left = parseInt(window.getComputedStyle(container).width) / 2 + 'px';
-        var top = parseInt(window.getComputedStyle(container).height) / 2 + 'px';
-        var textHtml = '<div class="cmp-wrapper checked" data-type="line" data-editable="false" style="left:'+left+';top:'+top+';width:100px;height:10px;color:#ff0000;background-color:#fff;font-family:"SimSun";font-weight:200;">\
+    function insertLine(container, data){
+        var left = (parseInt(container.parentNode.style.width) / 2 - 50) + 'px';
+        var top = parseInt(container.parentNode.style.height) / 2 + 'px';
+
+        var width = '100px';
+        var height = '2px';
+        var color = '#333';
+        if(data){
+            left = data.x + 'px';
+            top = data.y + 'px';
+            width = data.width;
+            height = data.height;
+            color = data.color;
+        }
+
+        var textHtml = '<div class="cmp-wrapper checked" data-type="line" data-editable="false"\
+                            style="left:'+left+';\
+                                    top:'+top+';\
+                                    width:'+width+';\
+                                    height:10px;">\
                             <div class="cmp-render" style="width:100%;height:100%;">\
                                 <div class="cmpScaleArea">\
-                                    <div style="background-color:#333;width:100%;height:2px;position:absolute;top:50%;transform:translateY(-50%);" class="cmpMain"></div>\
+                                    <div style="background-color:'+color+';width:100%;height:'+height+';position:absolute;top:50%;transform:translateY(-50%);" class="cmpMain"></div>\
                                 </div>\
                             </div>\
-                            <div class="cmp-operate checked" style="width:100%;height:100%;">\
+                            <div class="cmp-operate" style="width:100%;height:100%;">\
                                 <div style="display: block;">\
                                     <div class="borderLine"></div>\
                                     <div class="borderLine dashed"></div>\
@@ -781,9 +985,9 @@
         /**
          * clear all status
          */
-        bgColorPanel.children[0].value = '';
+        bgColorPanel.children[0].value = '#ffffff';
         bgColorPanel.children[1].value = '';
-        fontColorPanel.children[0].value = '';
+        fontColorPanel.children[0].value = '#ffffff';
         fontColorPanel.children[1].value = '';
         fontPanel.querySelector('input').value = '';
         sizePanel.querySelector('input').value = '';
@@ -805,18 +1009,24 @@
             sizeH.children[1].value = parseInt(element.style.height || window.getComputedStyle(element).height) ;
         }else if(type == 'clear'){
         }else{
-            bgColorPanel.children[0].value = _colorHelper.colorHex(element.style.backgroundColor);
-            bgColorPanel.children[1].value = _colorHelper.colorHex(element.style.backgroundColor);
-            fontColorPanel.children[0].value = _colorHelper.colorHex(element.style.color);
-            fontColorPanel.children[1].value = _colorHelper.colorHex(element.style.color);
-            fontPanel.querySelector('input').value = fontMap_1[window.getComputedStyle(element).fontFamily] || window.getComputedStyle(element).fontFamily;
-            sizePanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontSize);
-            thickPanel.querySelector('input').value = parseInt(window.getComputedStyle(element).fontWeight);
+            sizeH.querySelector('input').removeAttribute('readonly');
             
+            if(element.getAttribute('data-type') == 'text'){
+                bgColorPanel.children[0].value = _colorHelper.colorHex(element.style.backgroundColor) || '#fff';
+                bgColorPanel.children[1].value = _colorHelper.colorHex(element.style.backgroundColor) || '#fff';
+                fontColorPanel.children[0].value = _colorHelper.colorHex(element.style.color)  || '#fff';
+                fontColorPanel.children[1].value = _colorHelper.colorHex(element.style.color)  || '#fff';
+                fontPanel.querySelector('input').value = fontMap_1[element.style.fontFamily] || element.style.fontFamily;
+                sizePanel.querySelector('input').value = parseInt(element.style.fontSize);
+                thickPanel.querySelector('input').value = parseInt(element.style.fontWeight);
+
+                sizeH.querySelector('input').setAttribute('readonly', 'readonly');
+            }
+
             positionX.children[1].value = parseInt(element.style.left);
             positionY.children[1].value = parseInt(element.style.top);
             sizeW.children[1].value = parseInt(element.style.width);
-            sizeH.children[1].value = parseInt(element.style.height);
+            sizeH.children[1].value = parseInt(window.getComputedStyle(element).height);
         }
         
     }
@@ -832,10 +1042,10 @@
         var body = document.querySelector('.block-body');
         var bottom = document.querySelector('.block-bottom');
         
-        var stageHeight = parseFloat(window.getComputedStyle(stage).height);
-        var headerHeight = parseFloat(window.getComputedStyle(header).height);
-        var bodyHeight = parseFloat(window.getComputedStyle(body).height);
-        var bottomHeight = parseFloat(window.getComputedStyle(bottom).height);
+        var stageHeight = parseFloat(stage.style.height);
+        var headerHeight = parseFloat(header.style.height);
+        var bodyHeight = parseFloat(body.style.height);
+        var bottomHeight = parseFloat(bottom.style.height);
         
         switch(block){
             case 'header':

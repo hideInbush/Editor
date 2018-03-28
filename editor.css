@@ -272,7 +272,7 @@ ul,li,input{
     border: 1px solid #333;
 }
 .editor .workPlace .stage .cmp-wrapper .cmp-render{
-    position: absolute;
+    /* position: absolute; */
     /* top: 50%; */
     /* left: 50%; */
     pointer-events: auto;
@@ -282,13 +282,13 @@ ul,li,input{
 }
 .editor .workPlace .stage .cmp-wrapper .cmp-render .cmpScaleArea .cmpMain{
     outline: none;
-    height: 100%;
-    position: absolute;
+    /* height: 100%;
+    position: absolute; */
     z-index: 99;
 }
 .editor .workPlace .stage .cmp-operate{
     position: absolute;
-    /* top: 50%; */
+    top: 0;
     /* left: 50%; */
     cursor: pointer;
     -webkit-transform-origin: center center;

@@ -1,6 +1,8 @@
 var dataStream = function(){
     return {
         tid: Math.random().toString(8).substr(2,5),
+        accountNo: '',
+        modelId: '',
         sysInit: function(){
             var data = {
                 service: 'sysinit',
@@ -24,16 +26,13 @@ var dataStream = function(){
 
         blankModel:function(obj){
             var data ={
-                modelService:'blankModel',
-                accountNo:richMediaRequest.accountNo,
-                tid:richMediaRequest.tid
+                modelService: 'blankModel',
+                accountNo: this.accountNo,
+                tid: this.tid
             }
-            var successFunc =  function (e) {
-                obj.successFunc();
-            };
-            var errorFunc = function () {}
-            doAjax(data,successFunc,errorFunc,true);
+            doAjax(data, obj.succFunc, obj.errFunc, false);
         },
+
         initializeModel:function(obj){
             var data ={
                 modelService:'initialize',
@@ -48,28 +47,26 @@ var dataStream = function(){
             var errorFunc = function () {}
             doAjax(data,successFunc,errorFunc,true);
         },
-        saveModel:function(obj){
+
+        saveModel:function(bookdoc, obj){
             var data ={
-                modelService:'save',
-                accountNo:richMediaRequest.accountNo,
-                tid:richMediaRequest.tid,
-                modelId:obj.modelId,
-                bookdoc:obj.bookdoc
+                modelService: 'save',
+                accountNo: this.accountNo,
+                tid: this.tid,
+                modelId: this.modelId,
+                bookdoc: bookdoc
             }
-            var successFunc =  function (e) {};
-            var errorFunc = function () {}
-            doAjax(data,successFunc,errorFunc,true);
+            doAjax(data, obj.succFunc, obj.errFunc, true);
         },
+
         readModel:function(obj){
-            var data ={
-                modelService:'readModel',
-                accountNo:richMediaRequest.accountNo,
-                tid:richMediaRequest.tid,
-                modelId:obj.modelId
+            var data = {
+                modelService: 'readModel',
+                accountNo: this.accountNo,
+                tid: this.tid,
+                modelId: this.modelId
             }
-            var successFunc =  function (e) {};
-            var errorFunc = function () {}
-            doAjax(data,successFunc,errorFunc,true);
+            doAjax(data, obj.succFunc, obj.errFunc, true);
         },
         updateModel:function(obj){
             var data ={
@@ -83,16 +80,53 @@ var dataStream = function(){
             doAjax(data,successFunc,errorFunc,true);
         },
         deleteModel:function(obj){
-            var data ={
-                modelService:'delete',
-                accountNo:richMediaRequest.accountNo,
-                tid:richMediaRequest.tid,
-                modelId:obj.modelId
+            var data = {
+                modelService: 'delete',
+                accountNo: this.accountNo,
+                tid: this.tid,
+                modelId: this.modelId
             }
-            var successFunc =  function (e) {};
-            var errorFunc = function () {}
-            doAjax(data,successFunc,errorFunc,true);
-        }
+            doAjax(data, obj.succFunc, obj.errFunc, true);
+        },
+
+
+        /**
+         * 模板缩略图
+         */
+        queryPrivateModelIcon: function(obj){
+            var data ={
+                modelService: 'queryPrivateModelIcon',
+                accountNo: this.accountNo,
+                modelId: this.modelId,
+                tid: this.tid,
+                iconSize: 'X',
+            }
+            doAjax(data, obj.succFunc, obj.errFunc, true);
+        },
+        /**
+         * 模板大图
+         */
+        queryPrivateModelImg:function(obj){
+            var data ={
+                modelService: 'queryPrivateModelImg',
+                accountNo: this.accountNo,
+                modelId: this.modelId,
+                tid: this.tid
+            }
+            doAjax(data, obj.succFunc, obj.errFunc, true);
+        },
+        /**
+         * 所有模板列表
+         */
+        queryPrivateModelAll:function(obj){
+            var data ={
+                modelService: 'queryPrivateModelAll',
+                accountNo: this.accountNo,
+                tid: this.tid
+            }
+            doAjax(data, obj.succFunc, obj.errFunc, true);
+        },
+
     }
 };
 
