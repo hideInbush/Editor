@@ -428,6 +428,164 @@
     });
 
     /**
+     * 加载已有版式
+     */
+    var templates = document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.templates');
+    ds.sysInit();
+    var obj = {
+        succFunc: function(result){
+            if(result.success == '1'){
+                alert('登陆成功！');
+                ds.accountNo = result.accountNo;
+
+                var obj = {
+                    succFunc: function(result){
+                        var modalIds = result.modelId.split('|').filter(v => {return v;});
+                        modalIds.forEach(function(v){
+                            insertModelIcon(templates, v);
+                        })
+                    },
+                    errFunc: function(result){
+                        alert('获取模板列表失败！');
+                    }
+                };
+                ds.queryPrivateModelAll(obj);
+            }else{
+                alert('登陆失败！');
+            }
+        },
+        errFunc: function(result){
+            alert('登陆失败！');
+        }
+    };
+    ds.login(obj);
+
+    templates.addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-id') || element.parentNode.getAttribute('data-id')){
+            var modelId = element.getAttribute('data-id') || element.parentNode.getAttribute('data-id');
+            if(modelId == '0'){
+                var bookdoc = {
+                    height: "750px",
+                    width: "480px",
+                    bookheader: [{
+                        height:"150px",
+                        img:[],
+                        line:[],
+                        text:[],
+                        width:"480px",
+                        x:0,
+                        y:0,
+                    }],
+                    bookbody: [{
+                        height:"450px",
+                        img:[],
+                        line:[],
+                        text:[],
+                        width:"480px",
+                        x:0,
+                        y:150,
+                    }],
+                    bookbottom: [{
+                        height:"150px",
+                        img:[],
+                        line:[],
+                        text:[],
+                        width:"480px",
+                        x:0,
+                        y:600,
+                    }]
+                };
+                reAssignStage(bookdoc);
+                return;
+            }
+            var obj = {
+                succFunc: function(result){
+                    var bookdoc = result.bookdoc[0];
+                    reAssignStage(bookdoc);
+                },
+                errFunc: function(result){
+                    alert('读取模版信息失败');
+                }
+            };
+            ds.modelId = modelId;
+            ds.readModel(obj);
+        }
+    })
+    
+
+
+    /**
+     * 生成模版简略图
+     */
+    function insertModelIcon(container, modelId){
+        var tpl = '<li data-id="'+modelId+'">\
+                        <img/>\
+                        <text style="position:absolute;left:40px;top:65px;font-size:14px;">'+modelId+'</text>\
+                    </li>';
+        container.innerHTML += tpl;
+    }
+
+
+    /**
+     * 根据数据绘制stage里面的内容
+     */
+    function reAssignStage(bookdoc){
+        var stage = document.querySelector('.stage');
+        var blockHeader = stage.querySelector('.block-header'); 
+        var blockBody = stage.querySelector('.block-body'); 
+        var blockBottom = stage.querySelector('.block-bottom'); 
+
+        blockHeader.style.height = bookdoc['bookheader'][0]['height'];
+        blockBody.style.height = bookdoc['bookbody'][0]['height'];
+        blockBottom.style.height = bookdoc['bookbottom'][0]['height'];
+        
+
+        var cmps = [];
+        var cmpTypes = ['logo', 'line', 'img', 'text', 'bookno'];
+        for(var i=0; i<cmpTypes.length; i++){
+            var arr = bookdoc['bookheader'][0][cmpTypes[i]];
+            if(arr){
+                arr.forEach(function(v){
+                    v.cmpType = cmpTypes[i];
+                })
+                cmps = cmps.concat(arr);
+            }
+        }
+        for(var i=0; i<cmpTypes.length; i++){
+            var arr = bookdoc['bookbody'][0][cmpTypes[i]];
+            if(arr){
+                arr.forEach(function(v){
+                    v.cmpType = cmpTypes[i];
+                })
+                cmps = cmps.concat(arr);
+            }
+        }
+        for(var i=0; i<cmpTypes.length; i++){
+            var arr = bookdoc['bookbottom'][0][cmpTypes[i]];
+            if(arr){
+                arr.forEach(function(v){
+                    v.cmpType = cmpTypes[i];
+                })
+                cmps = cmps.concat(arr);
+            }
+        }
+        
+        var cmpsPanel = stage.children[3];
+        cmpsPanel.innerHTML = '';
+
+        cmps.forEach(function(v){
+            if(v.cmpType == 'text'){
+                insertText(cmpsPanel, v);
+            }else if(v.cmpType == 'img'){
+                insertImage(cmpsPanel, '', v);
+            }else if(v.cmpType == 'line'){
+                insertLine(cmpsPanel, v);
+            }
+        })
+    }
+
+    /**
      * 取色器
      */
     var colorPickers = document.querySelectorAll('.colorSample');

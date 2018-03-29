@@ -183,6 +183,20 @@ ul,li,input{
     width: 80px;
 }
 
+.editor .sideBar .res-panel-lib .templates li{
+    position: relative;
+    overflow: hidden;
+    float: left;
+}
+.editor .sideBar .res-panel-lib .templates img{
+    width:80px;
+    height:126px;
+    background-color:#fff;
+    float:left;
+    margin:15px 0 0 15px;
+    cursor: pointer;
+}
+
 .editor .workPlace{
     width: calc(100% - 660px);
     height: 100%;

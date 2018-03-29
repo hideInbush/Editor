@@ -89,7 +89,6 @@ var dataStream = function(){
             doAjax(data, obj.succFunc, obj.errFunc, true);
         },
 
-
         /**
          * 模板缩略图
          */
