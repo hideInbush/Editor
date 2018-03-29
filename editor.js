@@ -116,15 +116,12 @@
 
     document.querySelector('.sideBar').querySelector('.res-panel-lib').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
-        if(element.getAttribute('data-type') == 'text' || 
-            element.parentNode.getAttribute('data-type') == 'text' ||
-            element.parentNode.parentNode.getAttribute('data-type') == 'text'){
-            
+        if(element.getAttribute('data-type') == 'text'){
             if(document.querySelector('.stage').querySelector('.checked')){
                 document.querySelector('.stage').querySelector('.checked').querySelector('.cmp-operate').children[0].style.display = 'none';
                 document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
             }
-            insertText(document.querySelector('.stage').children[3]);
+            insertText(document.querySelector('.stage').children[3], {font_size: element.style.fontSize});
         }else if(element.getAttribute('data-type') == 'image' || 
                 element.parentNode.getAttribute('data-type') == 'image' ||
                 element.parentNode.parentNode.getAttribute('data-type') == 'image'){
@@ -158,9 +155,28 @@
     document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.breadNav').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.tagName == 'A'){
-            document.querySelector('.sideBar').querySelector('.res-panel-nav').children[1].click();
+            document.querySelector('.sideBar').querySelector('.res-panel-nav').children[2].click();
         }
     });
+
+    document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.colorBg').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-btn') == 'colorSquare'){
+            document.querySelector('.stage').style.background = _colorHelper.colorHex(element.style.backgroundColor);
+            document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.colorBg').querySelector('input').value = _colorHelper.colorHex(element.style.backgroundColor);
+        }
+    })
+    document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.colorBg').querySelector('input').addEventListener('change', function(e){
+        var element = e.target || e.srcElement;
+        document.querySelector('.stage').style.backgroundColor = _colorHelper.colorHex(element.value);
+    })
+    document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.imageBg').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-btn') == 'imageBg' || element.parentNode.getAttribute('data-btn') == 'imageBg'){
+            var url = element.getAttribute('data-src') || element.parentNode.getAttribute('data-src');
+            document.querySelector('.stage').style.background = 'url('+url+') 50% 50% / cover';
+        }
+    })
 
     document.querySelector('.editor-header').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
@@ -244,7 +260,12 @@
                 bookbody: bodyCmp,
                 bookbottom: bottomCmp
             }];
-
+            if(stage.style.backgroundColor != 'initial'){
+                bookdoc.bgcolor = _colorHelper.colorHex(stage.style.backgroundColor);
+            }
+            if(stage.style.backgroundImage != 'initial'){
+                bookdoc.bg_uri = stage.style.backgroundImage;
+            }
             debugger
 
             /**
@@ -297,97 +318,6 @@
             };
             ds.modelId = 'M4';
             ds.queryPrivateModelIcon(obj);
-        }else if(element.getAttribute('data-btn') == 'login'){
-            //automatic login 
-            ds.sysInit();
-            var obj = {
-                succFunc: function(result){
-                    if(result.success == '1'){
-                        alert('登陆成功！');
-                        ds.accountNo = result.accountNo;
-                    }else{
-                        alert('登陆失败！');
-                    }
-                },
-                errFunc: function(result){
-                    alert('登陆失败！');
-                }
-            };
-            ds.login(obj);
-        }else if(element.getAttribute('data-btn') == 'readList'){
-            var obj = {
-                succFunc: function(result){
-                    debugger
-                },
-                errFunc: function(result){
-                    alert('获取模板列表失败！');
-                }
-            };
-            ds.queryPrivateModelAll(obj);
-        }else if(element.getAttribute('data-btn') == 'readSingle'){
-            var obj = {
-                succFunc: function(result){
-                    var bookdoc = result.bookdoc[0];
-
-                    var stage = document.querySelector('.stage');
-                    var blockHeader = stage.querySelector('.block-header'); 
-                    var blockBody = stage.querySelector('.block-body'); 
-                    var blockBottom = stage.querySelector('.block-bottom'); 
-
-                    blockHeader.style.height = bookdoc['bookheader'][0]['height'];
-                    blockBody.style.height = bookdoc['bookbody'][0]['height'];
-                    blockBottom.style.height = bookdoc['bookbottom'][0]['height'];
-                    
-
-                    var cmps = [];
-                    var cmpTypes = ['logo', 'line', 'img', 'text', 'bookno'];
-                    for(var i=0; i<cmpTypes.length; i++){
-                        var arr = bookdoc['bookheader'][0][cmpTypes[i]];
-                        if(arr){
-                            arr.forEach(function(v){
-                                v.cmpType = cmpTypes[i];
-                            })
-                            cmps = cmps.concat(arr);
-                        }
-                    }
-                    for(var i=0; i<cmpTypes.length; i++){
-                        var arr = bookdoc['bookbody'][0][cmpTypes[i]];
-                        if(arr){
-                            arr.forEach(function(v){
-                                v.cmpType = cmpTypes[i];
-                            })
-                            cmps = cmps.concat(arr);
-                        }
-                    }
-                    for(var i=0; i<cmpTypes.length; i++){
-                        var arr = bookdoc['bookbottom'][0][cmpTypes[i]];
-                        if(arr){
-                            arr.forEach(function(v){
-                                v.cmpType = cmpTypes[i];
-                            })
-                            cmps = cmps.concat(arr);
-                        }
-                    }
-                    
-                    var cmpsPanel = stage.children[3];
-                    cmpsPanel.innerHTML = '';
-
-                    cmps.forEach(function(v){
-                        if(v.cmpType == 'text'){
-                            insertText(cmpsPanel, v);
-                        }else if(v.cmpType == 'img'){
-                            insertImage(cmpsPanel, '', v);
-                        }else if(v.cmpType == 'line'){
-                            insertLine(cmpsPanel, v);
-                        }
-                    })
-                },
-                errFunc: function(result){
-                    alert('读取模版信息失败');
-                }
-            };
-            ds.modelId = 'M4';
-            ds.readModel(obj);
         }else if(element.getAttribute('data-btn') == 'delete'){
             var obj = {
                 succFunc: function(result){
@@ -458,7 +388,7 @@
             alert('登陆失败！');
         }
     };
-    ds.login(obj);
+    // ds.login(obj);
 
     templates.addEventListener('click', function(e){
         var element = e.target || e.srcElement;
@@ -535,6 +465,9 @@
         var blockHeader = stage.querySelector('.block-header'); 
         var blockBody = stage.querySelector('.block-body'); 
         var blockBottom = stage.querySelector('.block-bottom'); 
+
+        bookdoc.bg_uri && (stage.style.backgroundImage = bookdoc.bg_uri);
+        bookdoc.bgcolor && (stage.style.backgroundColor = bookdoc.bgColor);
 
         blockHeader.style.height = bookdoc['bookheader'][0]['height'];
         blockBody.style.height = bookdoc['bookbody'][0]['height'];
@@ -843,7 +776,7 @@
         var left = (parseInt(container.parentNode.style.width) / 2 - 50) + 'px';
         var top = parseInt(container.parentNode.style.height) / 2 + 'px';
         var width = '100px';
-        var height = '20px';
+        var height = 'auto';
         var color = '#ff0000';
         var backgroundColor = '#ffffff';
         var fontFamily = 'SimSun';
@@ -851,16 +784,16 @@
         var fontWeight = '200';
         var text = '请输入文字';
         if(data){
-            left = data.x + 'px';
-            top = data.y + 'px';
-            width = data.width;
-            height = data.height;
-            color = data.font_color;
-            backgroundColor = data.bgcolor;
-            fontFamily = data.font_family;
-            fontSize = data.font_size;
-            fontWeight = data.font_weight;
-            text = data.comment;
+            data.x && (left = data.x + 'px');
+            data.y && (top = data.y + 'px');
+            width = data.width || width;
+            height = data.height || height;
+            color = data.font_color || color;
+            backgroundColor = data.bgcolor || backgroundColor;
+            fontFamily = data.font_family || fontFamily;
+            fontSize = data.font_size || fontSize;
+            fontWeight = data.font_weight || fontWeight;
+            text = data.comment || text;
         }
 
         var textHtml = '<div class="cmp-wrapper checked" data-type="text" data-editable="false"\
@@ -871,7 +804,7 @@
                                 color:'+color+';\
                                 background-color:'+backgroundColor+';\
                                 font-family:'+fontFamily+';\
-                                font-size:"'+fontSize+'"\
+                                font-size:'+fontSize+';\
                                 font-weight:'+fontWeight+';">\
                             <div class="cmp-render" style="width:100%;position:relative;z-index:9;">\
                                 <div class="cmpScaleArea" style="height:auto;">\
@@ -1018,7 +951,14 @@
             '14',
             '16',
             '18',
-            '20'
+            '24',
+            '36',
+            '48',
+            '72',
+            '96',
+            '120',
+            '150',
+            '200'
         ]
     };
     var thickSelect = {

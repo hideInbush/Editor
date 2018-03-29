@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>编辑器</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="./editor.css" />
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
 </head>
+
 <body class="editor">
     <div class="editor-header">
-        <a data-btn="login" class="btn save" style="margin:5px;">登陆</a>
-        <a data-btn="readList" class="btn save" style="margin:5px;">读取列表</a>
-        <a data-btn="readSingle" class="btn save" style="margin:5px;">读取模版</a>
         <a data-btn="delete" class="btn save" style="margin:5px;">删除模版</a>
         <a class="title">我的富媒体作品</a>
         <div class="right">
@@ -25,11 +25,19 @@
                 <i class="fa fa-clone" aria-hidden="true"></i>
                 版式
             </li>
-            <li data-id="1" >
+            <li data-id="1">
+                <i class="fa fa-font" aria-hidden="true"></i>
+                文字
+            </li>
+            <li data-id="2">
                 <i class="fa fa-picture-o" aria-hidden="true"></i>
                 素材
             </li>
             <li data-id="3">
+                <i class="fa fa-map" aria-hidden="true"></i>
+                背景
+            </li>
+            <li data-id="4" style="display:none;">
                 <i class="fa fa-cloud-upload" aria-hidden="true"></i>
                 上传
             </li>
@@ -44,14 +52,23 @@
                 </ul>
             </div>
             <div>
+                <ul class="font">
+                    <li data-type="text" style="font-size:48px;" class="title-big">大标题</li>
+                    <li data-type="text" style="font-size:30px;" class="title-normal">标题</li>
+                    <li data-type="text" style="font-size:20px;" class="title-sub">副标题</li>
+                    <li data-type="text" style="font-size:18px;" class="title-small">小标题</li>
+                    <li data-type="text" style="font-size:14px;" class="content">正文内容</li>
+                </ul>
+            </div>
+            <div>
                 <ul class="resource">
-                    <li class="icons icons-font" data-type="text">
+                    <li class="icons icons-font" data-type="text" style="display:none;">
                         <div>
                             <i class="fa fa-font" aria-hidden="true"></i>
                         </div>
                         <span>文本</span>
                     </li>
-                    <li class="icons icons-image" data-type="image" data-id="2">
+                    <li class="icons icons-image" data-type="image" data-id="5">
                         <div>
                             <i class="fa fa-camera-retro" aria-hidden="true"></i>
                         </div>
@@ -65,6 +82,57 @@
                     </li>
                 </ul>
             </div>
+            <div>
+                <div class="colorBg">
+                    <span>颜色背景</span>
+                    <div style="height:80px;">
+                        <div class="left" style="float:left;width:50px;">
+                            <input type="color" style="width:32px;height:36px;-webkit-appearance:checkbox;cursor:pointer;border:1px solid #313131;margin-top:-3px;" />
+                        </div>
+                        <div class="right" style="float:left;width:210px;margin-left:10px;height:80px;">
+                            <div data-btn="colorSquare" style="background: white;"></div>
+                            <div data-btn="colorSquare" style="background: rgb(30, 206, 211);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(18, 135, 170);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(0, 182, 240);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(94, 200, 243);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(64, 136, 193);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(0, 88, 175);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(91, 92, 255);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(107, 65, 243);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(168, 0, 195);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(224, 0, 177);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(255, 0, 126);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(255, 89, 169);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(255, 85, 109);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(0, 234, 198);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(0, 202, 182);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(0, 157, 105);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(0, 177, 61);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(84, 224, 22);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(172, 225, 136);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(240, 252, 115);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(248, 230, 0);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(226, 181, 0);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(216, 100, 0);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(255, 114, 0);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(255, 38, 0);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(243, 0, 28);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(84, 84, 85);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(41, 30, 30);"> </div>
+                            <div data-btn="colorSquare" style="background: rgb(0, 0, 0);"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBg">
+                    <span>图片背景</span>
+                    <ul style="overflow:hidden;">
+                        <li data-btn="imageBg" class="image" data-src="./1.jpg">
+                            <img src="./1.jpg" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background-color:pink;height:100%;"></div>
             <div style="overflow:hidden;">
                 <div class="breadNav">
                     <a>返回素材</a>
@@ -73,11 +141,10 @@
                 </div>
                 <ul class="resource" style="overflow:hidden;">
                     <li class="image" data-type="image-item" data-src="./1.jpg">
-                        <img src="./1.jpg"/>
+                        <img src="./1.jpg" />
                     </li>
                 </ul>
             </div>
-            <div style="background-color:pink;height:100%;"></div>
         </div>
     </div>
     <div class="workPlace">
@@ -162,15 +229,15 @@
                     <li>
                         <span>背景色</span>
                         <div class="colorPanel">
-                            <input data-type="bgColor" class="colorSample" type="color"/>
-                            <input class="colorValue" type="text" readonly="readonly"/>
+                            <input data-type="bgColor" class="colorSample" type="color" />
+                            <input class="colorValue" type="text" readonly="readonly" />
                         </div>
                     </li>
                     <li>
                         <span>颜色</span>
                         <div class="colorPanel">
-                            <input data-type="color" class="colorSample" type="color"/>
-                            <input class="colorValue" type="text" readonly="readonly"/>
+                            <input data-type="color" class="colorSample" type="color" />
+                            <input class="colorValue" type="text" readonly="readonly" />
                         </div>
                     </li>
                     <li class="select-font">
@@ -195,7 +262,7 @@
                             <a>X</a>
                             <input data-type="x" type="number" />
                         </div>
-                        <div class="positionY"> 
+                        <div class="positionY">
                             <a>Y</a>
                             <input data-type="y" type="number" />
                         </div>
@@ -203,11 +270,11 @@
                     <li>
                         <div class="sizeW">
                             <a>W</a>
-                            <input data-type="w" type="number"/>
+                            <input data-type="w" type="number" />
                         </div>
                         <div class="sizeH">
                             <a>H</a>
-                            <input data-type="h" type="number"/>
+                            <input data-type="h" type="number" />
                         </div>
                     </li>
                 </ul>
@@ -230,6 +297,5 @@
 <script type="text/javascript" src="./helper.js"></script>
 <script type="text/javascript" src="./dataHelper.js"></script>
 <script type="text/javascript" src="./editor.js"></script>
+
 </html>
-
-

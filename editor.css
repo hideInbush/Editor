@@ -197,6 +197,83 @@ ul,li,input{
     cursor: pointer;
 }
 
+.editor .sideBar .res-panel-lib .font li{
+    cursor: pointer;
+    text-align: center;
+    border-top: 1px solid #373E48;
+    border-bottom: 1px solid #373E48;
+}
+.editor .sideBar .res-panel-lib .font li:hover{
+    border-top: 1px solid #00c4cd;
+    border-bottom: 1px solid #00c4cd;
+    background-color: #31373f;
+}
+.editor .sideBar .res-panel-lib .font .title-big{
+    margin-top: 15px;
+    height: 62px;
+    line-height: 1.3;
+    font-size: 48px;
+}
+.editor .sideBar .res-panel-lib .font .title-normal{
+    height: 40px;
+    line-height: 1.3;
+    font-size: 30px;
+}
+.editor .sideBar .res-panel-lib .font .title-sub{
+    height: 32px;
+    line-height: 1.8;
+    font-size: 20px;
+}
+.editor .sideBar .res-panel-lib .font .title-small{
+    height: 26px;
+    line-height: 1.6;
+    font-size: 18px;
+}
+.editor .sideBar .res-panel-lib .font .content{
+    height: 23px;
+    line-height: 1.8;
+    font-size: 14px;
+}
+.editor .sideBar .res-panel-lib .colorBg{
+    border-bottom: 1px solid #090e15;
+    margin: 15px;
+    padding-bottom: 20px;
+}
+.editor .sideBar .res-panel-lib .colorBg span,
+.editor .sideBar .res-panel-lib .imageBg span{
+    display:block;
+    text-align:center;
+    font-size:14px;
+    color:#fff;
+    margin-bottom: 15px;
+}
+.editor .sideBar .res-panel-lib .colorBg .right div{
+    width:21px;
+    height:21px;
+    display:inline-block;
+    float:left;
+    border: 1px solid #313131;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.editor .sideBar .res-panel-lib .imageBg .image{
+    display: inline-block;
+    float: left;
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #373E48;
+    margin-left: 20px;
+    cursor: pointer;
+    margin: 10px;
+}
+.editor .sideBar .res-panel-lib .imageBg .image:hover{
+    border-color: #00c4cd;
+}
+.editor .sideBar .res-panel-lib .imageBg .image img{
+    width: 100%;
+    display: block;
+}
+
 .editor .workPlace{
     width: calc(100% - 660px);
     height: 100%;
@@ -212,6 +289,8 @@ ul,li,input{
     z-index: 5;
     left: 50%;
     transform: translateX(-50%);
+    background-position: 50% 50%;
+    background-size: cover;
 }
 
 .editor .workPlace .stage .block{
