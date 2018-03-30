@@ -80,6 +80,18 @@
                         </div>
                         <span>线条</span>
                     </li>
+                    <li class="icons icons-logo" data-type="logo">
+                        <div>
+                            <i class="fa fa-puzzle-piece" aria-hidden="true"></i>
+                        </div>
+                        <span>logo</span>
+                    </li>
+                    <li class="icons icons-bookno" data-type="bookno">
+                        <div>
+                            <i class="fa fa-bookmark" aria-hidden="true"></i>
+                        </div>
+                        <span>页码</span>
+                    </li>
                 </ul>
             </div>
             <div>
@@ -128,6 +140,9 @@
                     <ul style="overflow:hidden;">
                         <li data-btn="imageBg" class="image" data-src="./1.jpg">
                             <img src="./1.jpg" />
+                        </li>
+                        <li data-btn="imageBg" class="image" data-src="./2.jpg">
+                            <img src="./2.jpg" />
                         </li>
                     </ul>
                 </div>
@@ -203,15 +218,27 @@
                 </div>
             </div>
         </div>
-        <div class="tools" style="display:none;">
+        <div class="tools" style="">
             <div class="tools-box">
-                <a>撤销</a>
-                <a>重做</a>
+                <a data-btn="undo">
+                    <i class="fa fa-reply" aria-hidden="true"></i>
+                    撤销
+                </a>
+                <a data-btn="clear">
+                    <i class="fa fa-share" aria-hidden="true"></i>
+                    重做
+                </a>
             </div>
             <div class="tools-box">
-                <a>预览</a>
-                <a>网格</a>
-                <a class="active">吸附</a>
+                <a data-btn="preview">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                    预览
+                </a>
+                <a data-btn="grid">
+                    <i class="fa fa-th" aria-hidden="true"></i>
+                    网格
+                </a>
+                <!-- <a class="active">吸附</a> -->
             </div>
         </div>
     </div>

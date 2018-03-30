@@ -147,6 +147,12 @@ ul,li,input{
 .editor .sideBar .res-panel-lib .resource .icons-line div{
     background-color:#FF8181;
 }
+.editor .sideBar .res-panel-lib .resource .icons-logo div{
+    background-color:#36BC6F;
+}
+.editor .sideBar .res-panel-lib .resource .icons-bookno div{
+    background-color:#4997FF;
+}
 .editor .sideBar .res-panel-lib .resource .icons div{
     width: 46px;
     height: 46px;
@@ -469,12 +475,17 @@ ul,li,input{
     width: 40px;
     top: 200px;
     z-index: 1000;
-    right: 428px;
+    right: 300px;
 }
 .editor .workPlace .tools .tools-box{
     overflow: hidden;
     width: 100%;
     margin-bottom: 10px;
+}
+.editor .workPlace .tools .tools-box a>i{
+    position: absolute;
+    left: 14px;
+    top: 6px;
 }
 .editor .workPlace .tools .tools-box a{
     width: 40px;
@@ -485,6 +496,8 @@ ul,li,input{
     display: inline-block;
     line-height: 42px;
     text-align: center;
+    position: relative;
+    line-height: 60px;
 }
 .editor .workPlace .tools .tools-box a:hover{
     color: #00c4cd;

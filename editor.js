@@ -1,11 +1,80 @@
 (function(){
+    var bookdoc_origin = [{
+        height: "750px",
+        width: "480px",
+        bookheader: [{
+            height:"150px",
+            img:[],
+            line:[],
+            text:[],
+            width:"480px",
+            x:0,
+            y:0,
+        }],
+        bookbody: [{
+            height:"450px",
+            img:[],
+            line:[],
+            text:[],
+            width:"480px",
+            x:0,
+            y:150,
+        }],
+        bookbottom: [{
+            height:"150px",
+            img:[],
+            line:[],
+            text:[],
+            width:"480px",
+            x:0,
+            y:600,
+        }]
+    }];
+    
+    var bookdoc_history = [];
     /**
-     * @description 拖动 + 变换
+     * 初始化数据请求加载
+     * 加载已有版式
+     */
+    var templates = document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.templates');
+    ds.sysInit();
+    var obj = {
+        succFunc: function(result){
+            if(result.success == '1'){
+                alert('登陆成功！');
+                ds.accountNo = result.accountNo;
+
+                var obj = {
+                    succFunc: function(result){
+                        var modalIds = result.modelId.split('|').filter(v => {return v;});
+                        modalIds.forEach(function(v){
+                            insertModelIcon(templates, v);
+                        })
+                    },
+                    errFunc: function(result){
+                        alert('获取模板列表失败！');
+                    }
+                };
+                ds.queryPrivateModelAll(obj);
+            }else{
+                alert('登陆失败！');
+            }
+        },
+        errFunc: function(result){
+            alert('登陆失败！');
+        }
+    };
+    ds.login(obj);
+
+
+    /**
+     * 舞台stage 拖动 + 变换
      */
     document.querySelector('.stage').addEventListener('mousedown', function(e){
         var element = e.target || e.srcElement;
 
         if(e.buttons == '1'){
+            //左击事件
             if(element.className.indexOf('dot') > -1){
                 /**
                  * 判断是否在边缘的小正方形上
@@ -61,6 +130,7 @@
                 }
             }
         }else if(e.buttons == '2'){
+            //右击事件
             var drag = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
 
             var elements = document.querySelectorAll('.cmp-wrapper');
@@ -89,6 +159,9 @@
         }
     });
 
+    /**
+     * 双击切换 文本可编辑与不可编辑
+     */
     document.querySelector('.stage').addEventListener('dblclick', function(e){
         var element = e.target || e.srcElement;
         element = _domHelper.findParentNodeByClass(element, 'cmp-wrapper');
@@ -98,6 +171,9 @@
         }
     })
 
+    /**
+     * 侧边栏切换事件
+     */
     document.querySelector('.sideBar').querySelector('.res-panel-nav').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.getAttribute('data-id') || element.parentNode.getAttribute('data-id')){
@@ -113,7 +189,6 @@
             $(lib_target).addClass('active');
         }
     });
-
     document.querySelector('.sideBar').querySelector('.res-panel-lib').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.getAttribute('data-type') == 'text'){
@@ -125,6 +200,7 @@
         }else if(element.getAttribute('data-type') == 'image' || 
                 element.parentNode.getAttribute('data-type') == 'image' ||
                 element.parentNode.parentNode.getAttribute('data-type') == 'image'){
+            //点击图片icon 进入次级页面选择图片
             var num = parseInt(element.parentNode.getAttribute('data-id') || element.parentNode.getAttribute('data-id') || element.parentNode.parentNode.getAttribute('data-id'));
             var lib = document.querySelector('.res-panel-lib');
             lib.querySelector('.active').className = lib.querySelector('.active').className.replace('active','');
@@ -141,7 +217,7 @@
             insertLine(document.querySelector('.stage').children[3]);
         }else if(element.getAttribute('data-type') == 'image-item' ||
                 element.parentNode.getAttribute('data-type') == 'image-item'){
-            
+            //图片次级页面
             var src = element.getAttribute('data-src') || element.parentNode.getAttribute('data-src');
 
             if(document.querySelector('.stage').querySelector('.checked')){
@@ -149,9 +225,22 @@
                 document.querySelector('.stage').querySelector('.checked').className = document.querySelector('.stage').querySelector('.checked').className.replace(/checked/g,'');
             }
             insertImage(document.querySelector('.stage').children[3], src);
+        }else if(element.getAttribute('data-type') == 'logo' || 
+            element.parentNode.getAttribute('data-type') == 'logo' ||
+            element.parentNode.parentNode.getAttribute('data-type') == 'logo'){
+
+            alert('logo');
+        }else if(element.getAttribute('data-type') == 'bookno' || 
+            element.parentNode.getAttribute('data-type') == 'bookno' ||
+            element.parentNode.parentNode.getAttribute('data-type') == 'bookno'){
+
+            alert('bookno');
         }
     });
 
+    /**
+     * 素材面包屑的点击函数
+     */
     document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.breadNav').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.tagName == 'A'){
@@ -159,240 +248,98 @@
         }
     });
 
+    /**
+     * 撤销、重做、预览、网格工具栏监听事件
+     */
+    document.querySelector('.tools').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-btn') == 'undo' ||
+            element.parentNode.getAttribute('data-btn') == 'undo'){
+            
+            if(bookdoc_history.length > 0){
+                reAssignStage(bookdoc_history.pop()[0]);
+                clearSelected();
+            }else{
+                alert('no more travel');
+            }
+        }else if(element.getAttribute('data-btn') == 'clear' ||
+                element.parentNode.getAttribute('data-btn') == 'clear'){
+            reAssignStage(bookdoc_origin[0]);
+
+            //清空时间旅行
+            bookdoc_history = [];
+
+            clearSelected();
+        }
+        else if(element.getAttribute('data-btn') == 'preview' ||
+                element.parentNode.getAttribute('data-btn') == 'preview'){
+            alert('preview');
+        }
+        else if(element.getAttribute('data-btn') == 'grid' ||
+                element.parentNode.getAttribute('data-btn') == 'grid'){
+            alert('grid');
+        }
+    });
+    /**
+     * 清除状态
+     */
+    function clearSelected(){
+        var elements = document.querySelectorAll('.cmp-wrapper');
+        for(var i=0; i<elements.length; i++){
+            if(elements[i].className.indexOf('checked') > -1){
+                elements[i].className = elements[i].className.replace(/checked/g,'');
+            }
+
+            if(elements[i].querySelector('.cmp-operate').children[0].style.display == 'block'){
+                elements[i].querySelector('.cmp-operate').children[0].style.display = 'none';
+                elements[i].querySelector('.cmpMain').setAttribute('contenteditable', 'false');
+                elements[i].setAttribute('data-editable', 'false');
+            }
+        }
+
+        document.querySelector('.modal-menu').style.display = 'none';
+        
+        updateDetailBar(undefined, 'clear');
+    }
+
+    /**
+     * 背景模块点击事件
+     * colorBg 颜色选择区域
+     * imageBg 图片选择区域
+     */
     document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.colorBg').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.getAttribute('data-btn') == 'colorSquare'){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
             document.querySelector('.stage').style.background = _colorHelper.colorHex(element.style.backgroundColor);
             document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.colorBg').querySelector('input').value = _colorHelper.colorHex(element.style.backgroundColor);
         }
     })
     document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.colorBg').querySelector('input').addEventListener('change', function(e){
+        //时间旅行
+        bookdoc_history.push(produceBookdoc());
         var element = e.target || e.srcElement;
         document.querySelector('.stage').style.backgroundColor = _colorHelper.colorHex(element.value);
     })
     document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.imageBg').addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.getAttribute('data-btn') == 'imageBg' || element.parentNode.getAttribute('data-btn') == 'imageBg'){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
             var url = element.getAttribute('data-src') || element.parentNode.getAttribute('data-src');
             document.querySelector('.stage').style.background = 'url('+url+') 50% 50% / cover';
         }
     })
 
-    document.querySelector('.editor-header').addEventListener('click', function(e){
-        var element = e.target || e.srcElement;
-        if(element.getAttribute('data-btn') == 'save'){
-            var stage = document.querySelector('.stage');
-            var blockHeader = stage.querySelector('.block-header');
-            var blockBody = stage.querySelector('.block-body');
-            var blockBottom = stage.querySelector('.block-bottom');
-            var cmp = stage.querySelectorAll('.cmp-wrapper');
-
-            var cmps = [];
-            for(var i=0; i<cmp.length; i++){
-                cmps.push(cmp[i]);
-            }
-
-            var headerPosition = [0, parseFloat(blockHeader.style.height)];
-            var bodyPosition = [parseFloat(headerPosition[1]), parseFloat(headerPosition[1])+parseFloat(blockBody.style.height)];
-            var bottomPosition = [parseFloat(bodyPosition[1]), parseFloat(bodyPosition[1])+parseFloat(blockBottom.style.height)];
-            
-            var headerCmp = [{
-                x: 0,
-                y: headerPosition[1],
-                width: blockHeader.style.width,
-                height: blockHeader.style.height,
-                line: [],
-                img: [],
-                text: []
-            }];
-            var bodyCmp = [{
-                x: 0,
-                y: bodyPosition[0],
-                width: blockBody.style.width,
-                height: blockBody.style.height,
-                line: [],
-                img: [],
-                text: []
-            }];
-            var bottomCmp = [{
-                x: 0,
-                y: bottomPosition[0],
-                width: blockBottom.style.width,
-                height: blockBottom.style.height,
-                line: [],
-                img: [],
-                text: []
-            }];
-
-            cmps.forEach(function(v){
-                var top = parseFloat(v.style.top);
-                if(top >= headerPosition[0] && top < headerPosition[1]){
-                    if(v.getAttribute('data-type') == 'image'){
-                        headerCmp[0].img.push(createJsonData(v));
-                    }else if(v.getAttribute('data-type') == 'text'){
-                        headerCmp[0].text.push(createJsonData(v));
-                    }else if(v.getAttribute('data-type') == 'line'){
-                        headerCmp[0].line.push(createJsonData(v));
-                    }
-                }else if(top >= bodyPosition[0] && top < bodyPosition[1]){
-                    if(v.getAttribute('data-type') == 'image'){
-                        bodyCmp[0].img.push(createJsonData(v));
-                    }else if(v.getAttribute('data-type') == 'text'){
-                        bodyCmp[0].text.push(createJsonData(v));
-                    }else if(v.getAttribute('data-type') == 'line'){
-                        bodyCmp[0].line.push(createJsonData(v));
-                    }
-                }else if(top >= bottomPosition[0] && top < bottomPosition[1]){
-                    if(v.getAttribute('data-type') == 'image'){
-                        bottomCmp[0].img.push(createJsonData(v));
-                    }else if(v.getAttribute('data-type') == 'text'){
-                        bottomCmp[0].text.push(createJsonData(v));
-                    }else if(v.getAttribute('data-type') == 'line'){
-                        bottomCmp[0].line.push(createJsonData(v));
-                    }
-                }
-            })
-
-            var bookdoc = [{
-                width: stage.style.width,
-                height: stage.style.height,
-                bookheader: headerCmp,
-                bookbody: bodyCmp,
-                bookbottom: bottomCmp
-            }];
-            if(stage.style.backgroundColor != 'initial'){
-                bookdoc.bgcolor = _colorHelper.colorHex(stage.style.backgroundColor);
-            }
-            if(stage.style.backgroundImage != 'initial'){
-                bookdoc.bg_uri = stage.style.backgroundImage;
-            }
-            debugger
-
-            /**
-             * 取新模板编号
-             */
-            var obj = {
-                succFunc: function(result){
-                    if(result.success == '1'){
-                        ds.modelId = result.modelId;
-                    }else{
-                        alert('取新模板编号失败！');
-                    }
-                },
-                errFunc: function(result){
-                    alert('取新模板编号失败！');
-                }
-            };
-            // ds.blankModel(obj);
-
-            /**
-             * 保存模板
-             */
-            var obj = {
-                succFunc: function(result){
-                    if(result.success == '1'){
-                        alert('保存模板成功！');
-                    }else{
-                        alert('保存模板失败！');
-                    }
-                },
-                errFunc: function(result){
-                    alert('保存模板失败！');
-                }
-            };
-            // ds.saveModel(bookdoc, obj);
-
-
-
-        }else if(element.getAttribute('data-btn') == 'preview'){
-            /**
-             * 查询简图
-             */
-            var obj = {
-                succFunc: function(result){
-                    debugger
-                },
-                errFunc: function(result){
-                    alert('读取缩略图失败！');
-                }
-            };
-            ds.modelId = 'M4';
-            ds.queryPrivateModelIcon(obj);
-        }else if(element.getAttribute('data-btn') == 'delete'){
-            var obj = {
-                succFunc: function(result){
-                    debugger
-                },
-                errFunc: function(result){
-                    alert('删除模板失败！');
-                }
-            };
-            ds.modelId = '';
-            ds.deleteModel(obj);
-        }
-    });
-
-    document.querySelector('.positionPanel').addEventListener('change', function(e){
-        var element = e.target || e.srcElement;
-        var stage = document.querySelector('.stage');
-        var cmp = stage.querySelector('.checked').parentNode;
-        if(element.getAttribute('data-type') == 'x'){
-            cmp.style.left = parseFloat(element.value) + 'px';
-        }else if(element.getAttribute('data-type') == 'y'){
-            cmp.style.top = parseFloat(element.value) + 'px';
-        }else if(element.getAttribute('data-type') == 'w'){
-            cmp.style.width = parseFloat(element.value) + 'px';
-        }else if(element.getAttribute('data-type') == 'h'){
-            cmp.style.height = parseFloat(element.value) + 'px';
-        }
-    });
-
-    document.querySelector('.modal-menu').addEventListener('click', function(e){
-        var element = e.target || e.srcElement;
-        if(element.tagName.toLocaleLowerCase() == 'li'){
-            if(element.getAttribute('data-btn') == 'delete'){
-                document.querySelector('.stage').querySelector('.checked').remove();
-            }
-        }
-        document.querySelector('.modal-menu').style.display = 'none';
-    });
-
     /**
-     * 加载已有版式
+     * 版式模块 点击事件
      */
-    var templates = document.querySelector('.sideBar').querySelector('.res-panel-lib').querySelector('.templates');
-    ds.sysInit();
-    var obj = {
-        succFunc: function(result){
-            if(result.success == '1'){
-                alert('登陆成功！');
-                ds.accountNo = result.accountNo;
-
-                var obj = {
-                    succFunc: function(result){
-                        var modalIds = result.modelId.split('|').filter(v => {return v;});
-                        modalIds.forEach(function(v){
-                            insertModelIcon(templates, v);
-                        })
-                    },
-                    errFunc: function(result){
-                        alert('获取模板列表失败！');
-                    }
-                };
-                ds.queryPrivateModelAll(obj);
-            }else{
-                alert('登陆失败！');
-            }
-        },
-        errFunc: function(result){
-            alert('登陆失败！');
-        }
-    };
-    // ds.login(obj);
-
     templates.addEventListener('click', function(e){
         var element = e.target || e.srcElement;
         if(element.getAttribute('data-id') || element.parentNode.getAttribute('data-id')){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
             var modelId = element.getAttribute('data-id') || element.parentNode.getAttribute('data-id');
             if(modelId == '0'){
                 var bookdoc = {
@@ -442,11 +389,148 @@
             ds.readModel(obj);
         }
     })
-    
 
 
     /**
-     * 生成模版简略图
+     * 头部工具栏
+     */
+    document.querySelector('.editor-header').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-btn') == 'save'){
+            var bookdoc = produceBookdoc();
+
+            debugger
+            /**
+             * 取新模板编号
+             */
+            var obj = {
+                succFunc: function(result){
+                    if(result.success == '1'){
+                        ds.modelId = result.modelId;
+                    }else{
+                        alert('取新模板编号失败！');
+                    }
+                },
+                errFunc: function(result){
+                    alert('取新模板编号失败！');
+                }
+            };
+            // ds.blankModel(obj);
+
+            /**
+             * 保存模板
+             */
+            var obj = {
+                succFunc: function(result){
+                    if(result.success == '1'){
+                        alert('保存模板成功！');
+                    }else{
+                        alert('保存模板失败！');
+                    }
+                },
+                errFunc: function(result){
+                    alert('保存模板失败！');
+                }
+            };
+            // ds.saveModel(bookdoc, obj);
+
+        }else if(element.getAttribute('data-btn') == 'preview'){
+            /**
+             * 查询简图
+             */
+            var obj = {
+                succFunc: function(result){
+                    debugger
+                },
+                errFunc: function(result){
+                    alert('读取缩略图失败！');
+                }
+            };
+            ds.modelId = 'M4';
+            ds.queryPrivateModelIcon(obj);
+        }else if(element.getAttribute('data-btn') == 'delete'){
+            var obj = {
+                succFunc: function(result){
+                    debugger
+                },
+                errFunc: function(result){
+                    alert('删除模板失败！');
+                }
+            };
+            ds.modelId = '';
+            ds.deleteModel(obj);
+        }
+    });
+
+
+    /**
+     * 禁止右击事件
+     */
+    document.oncontextmenu = function(){
+    　　return false;
+    }
+    /**
+     * 右击菜单点击事件
+     */
+    document.querySelector('.modal-menu').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.tagName.toLocaleLowerCase() == 'li'){
+            if(element.getAttribute('data-btn') == 'delete'){
+                //时间旅行
+                bookdoc_history.push(produceBookdoc());
+                document.querySelector('.stage').querySelector('.checked').remove();
+            }
+        }
+        document.querySelector('.modal-menu').style.display = 'none';
+    });
+
+
+    /**
+     * 右侧栏 位置设置监听事件
+     */
+    document.querySelector('.positionPanel').addEventListener('change', function(e){
+        var element = e.target || e.srcElement;
+        var stage = document.querySelector('.stage');
+        var cmp = stage.querySelector('.checked').parentNode;
+        if(element.getAttribute('data-type') == 'x'){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
+            cmp.style.left = parseFloat(element.value) + 'px';
+        }else if(element.getAttribute('data-type') == 'y'){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
+            cmp.style.top = parseFloat(element.value) + 'px';
+        }else if(element.getAttribute('data-type') == 'w'){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
+            cmp.style.width = parseFloat(element.value) + 'px';
+        }else if(element.getAttribute('data-type') == 'h'){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
+            cmp.style.height = parseFloat(element.value) + 'px';
+        }
+    });
+    /**
+     * 右侧栏-取色器绑定监听事件
+     */
+    var colorPickers = document.querySelectorAll('.colorSample');
+    for(var i=0; i<colorPickers.length; i++){
+        colorPickers[i].addEventListener('change', function(e){
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
+            var element = this;
+            element.nextElementSibling.value = element.value;
+            if(element.getAttribute('data-type') == 'bgColor'){
+                document.querySelector('.stage').querySelector('.checked').style.backgroundColor = element.value;
+            }else if(element.getAttribute('data-type') == 'color'){
+                document.querySelector('.stage').querySelector('.checked').style.color = element.value;
+            }
+        });
+    }
+
+
+    /**
+     * 版式模块-生成模版简略图
      */
     function insertModelIcon(container, modelId){
         var tpl = '<li data-id="'+modelId+'">\
@@ -456,9 +540,8 @@
         container.innerHTML += tpl;
     }
 
-
     /**
-     * 根据数据绘制stage里面的内容
+     * 根据数据重新绘制stage里面的内容
      */
     function reAssignStage(bookdoc){
         var stage = document.querySelector('.stage');
@@ -468,6 +551,9 @@
 
         bookdoc.bg_uri && (stage.style.backgroundImage = bookdoc.bg_uri);
         bookdoc.bgcolor && (stage.style.backgroundColor = bookdoc.bgColor);
+        if(!bookdoc.bg_uri && !bookdoc.bgcolor){
+            stage.style.background = '';
+        }
 
         blockHeader.style.height = bookdoc['bookheader'][0]['height'];
         blockBody.style.height = bookdoc['bookbody'][0]['height'];
@@ -519,28 +605,100 @@
     }
 
     /**
-     * 取色器
+     * 收集stage的数据生成bookdoc
      */
-    var colorPickers = document.querySelectorAll('.colorSample');
-    for(var i=0; i<colorPickers.length; i++){
-        colorPickers[i].addEventListener('change', function(e){
-            var element = this;
-            element.nextElementSibling.value = element.value;
-            if(element.getAttribute('data-type') == 'bgColor'){
-                document.querySelector('.stage').querySelector('.checked').style.backgroundColor = element.value;
-            }else if(element.getAttribute('data-type') == 'color'){
-                document.querySelector('.stage').querySelector('.checked').style.color = element.value;
+    function produceBookdoc(){
+        var stage = document.querySelector('.stage');
+        var blockHeader = stage.querySelector('.block-header');
+        var blockBody = stage.querySelector('.block-body');
+        var blockBottom = stage.querySelector('.block-bottom');
+        var cmp = stage.querySelectorAll('.cmp-wrapper');
+
+        var cmps = [];
+        for(var i=0; i<cmp.length; i++){
+            cmps.push(cmp[i]);
+        }
+
+        var headerPosition = [0, parseFloat(blockHeader.style.height)];
+        var bodyPosition = [parseFloat(headerPosition[1]), parseFloat(headerPosition[1])+parseFloat(blockBody.style.height)];
+        var bottomPosition = [parseFloat(bodyPosition[1]), parseFloat(bodyPosition[1])+parseFloat(blockBottom.style.height)];
+        
+        var headerCmp = [{
+            x: 0,
+            y: headerPosition[1],
+            width: blockHeader.style.width,
+            height: blockHeader.style.height,
+            line: [],
+            img: [],
+            text: []
+        }];
+        var bodyCmp = [{
+            x: 0,
+            y: bodyPosition[0],
+            width: blockBody.style.width,
+            height: blockBody.style.height,
+            line: [],
+            img: [],
+            text: []
+        }];
+        var bottomCmp = [{
+            x: 0,
+            y: bottomPosition[0],
+            width: blockBottom.style.width,
+            height: blockBottom.style.height,
+            line: [],
+            img: [],
+            text: []
+        }];
+
+        cmps.forEach(function(v){
+            var top = parseFloat(v.style.top);
+            if(top >= headerPosition[0] && top < headerPosition[1]){
+                if(v.getAttribute('data-type') == 'image'){
+                    headerCmp[0].img.push(createJsonData(v));
+                }else if(v.getAttribute('data-type') == 'text'){
+                    headerCmp[0].text.push(createJsonData(v));
+                }else if(v.getAttribute('data-type') == 'line'){
+                    headerCmp[0].line.push(createJsonData(v));
+                }
+            }else if(top >= bodyPosition[0] && top < bodyPosition[1]){
+                if(v.getAttribute('data-type') == 'image'){
+                    bodyCmp[0].img.push(createJsonData(v));
+                }else if(v.getAttribute('data-type') == 'text'){
+                    bodyCmp[0].text.push(createJsonData(v));
+                }else if(v.getAttribute('data-type') == 'line'){
+                    bodyCmp[0].line.push(createJsonData(v));
+                }
+            }else if(top >= bottomPosition[0] && top < bottomPosition[1]){
+                if(v.getAttribute('data-type') == 'image'){
+                    bottomCmp[0].img.push(createJsonData(v));
+                }else if(v.getAttribute('data-type') == 'text'){
+                    bottomCmp[0].text.push(createJsonData(v));
+                }else if(v.getAttribute('data-type') == 'line'){
+                    bottomCmp[0].line.push(createJsonData(v));
+                }
             }
-        });
+        })
+
+        var bookdoc = [{
+            width: stage.style.width,
+            height: stage.style.height,
+            bookheader: headerCmp,
+            bookbody: bodyCmp,
+            bookbottom: bottomCmp
+        }];
+        if(stage.style.backgroundColor != 'initial'){
+            bookdoc[0].bgcolor = _colorHelper.colorHex(stage.style.backgroundColor);
+        }
+        if(stage.style.backgroundImage != 'initial'){
+            bookdoc[0].bg_uri = stage.style.backgroundImage;
+        }
+
+        return bookdoc;
     }
-    
+
     /**
-     * 禁止右击事件
-     */
-    document.oncontextmenu = function(){
-    　　return false;
-    }
-    /**
+     * 根据组件类型生成对应对象
      * @param {element} element 
      */
     function createJsonData(element){
@@ -587,6 +745,9 @@
      * @param {blockFlag} 是否为三部分模块
      */
     function resizeCmp(e, element, blockFlag){
+        //时间旅行
+        bookdoc_history.push(produceBookdoc());
+        
         var editFlag = false;
         // _commonPieces.commonPieces.forbidEnd();
         var a = 0,
@@ -703,6 +864,7 @@
         document.onmouseup = function () {
             document.onmousedown = null;
             document.onmousemove = null;
+
         };
     }
 
@@ -712,6 +874,9 @@
      * @param {element} dom元素
      */
     function dragAndDrop(e, drag){
+        //时间旅行
+        bookdoc_history.push(produceBookdoc());
+
         //鼠标点击物体那一刻相对于物体左侧边框的距离=点击时的位置相对于浏览器最左边的距离-物体左边框相对于浏览器最左边的距离  
         diffX = e.clientX - drag.offsetLeft; 
         diffY = e.clientY - drag.offsetTop;
@@ -759,7 +924,7 @@
             //     eidtFalg = false;
             // };
             this.onmousemove = null;
-            this.onmouseup = null; //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）  
+            this.onmouseup = null;
             //修复低版本ie bug  
             if (typeof drag.releaseCapture != 'undefined') {
                 drag.releaseCapture();
@@ -794,6 +959,9 @@
             fontSize = data.font_size || fontSize;
             fontWeight = data.font_weight || fontWeight;
             text = data.comment || text;
+        }else{
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
         }
 
         var textHtml = '<div class="cmp-wrapper checked" data-type="text" data-editable="false"\
@@ -840,6 +1008,9 @@
             width = data.width;
             height = data.height;
             src = data.src;
+        }else{
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
         }
 
         var textHtml = '<div class="cmp-wrapper checked" data-type="image" data-editable="false"\
@@ -888,6 +1059,9 @@
             width = data.width;
             height = data.height;
             color = data.color;
+        }else{
+            //时间旅行
+            bookdoc_history.push(produceBookdoc());
         }
 
         var textHtml = '<div class="cmp-wrapper checked" data-type="line" data-editable="false"\
@@ -974,7 +1148,6 @@
     renderSelect(fontSelect, document.querySelector('.select-font'), 'font');
     renderSelect(sizeSelect, document.querySelector('.select-size'), 'size');
     renderSelect(thickSelect, document.querySelector('.select-thick'), 'weight');
-    
     /**
      * @description 生成下拉框组件
      * @param {dom} 渲染的目标元素 
@@ -1015,6 +1188,8 @@
                 arrow.style.transform = 'rotate(0)';
                 element.setAttribute('data-status', 'expand');
             }else if(element.getAttribute('data-name')){
+                //时间旅行
+                bookdoc_history.push(produceBookdoc());
                 var input = element.parentNode.previousElementSibling.children[0];
                 input.value = element.getAttribute('data-name');
 
@@ -1025,16 +1200,25 @@
                     var body = stage.querySelector('.block-body');
                     var bottom = stage.querySelector('.block-bottom');
                     
-                    stage.querySelector('.block-active').className = document.querySelector('.stage').querySelector('.block-active').className.replace('block-active', '');
+                    $(stage.querySelector('.block-active')).removeClass('block-active');
                     if(input.value == '头部编辑'){
                         header.className += ' block-active';
                         updateDetailBar(header, 'block');
+
+                        document.querySelector('.sideBar').querySelector('.icons-logo').style.display = 'inline-block';
+                        document.querySelector('.sideBar').querySelector('.icons-bookno').style.display = 'inline-block';
                     }else if(input.value == '正文编辑'){
                         body.className += ' block-active';
                         updateDetailBar(body, 'block');
+
+                        document.querySelector('.sideBar').querySelector('.icons-logo').style.display = 'none';
+                        document.querySelector('.sideBar').querySelector('.icons-bookno').style.display = 'none';
                     }else if(input.value == '尾部编辑'){
                         bottom.className += ' block-active';
                         updateDetailBar(bottom, 'block');
+
+                        document.querySelector('.sideBar').querySelector('.icons-logo').style.display = 'inline-block';
+                        document.querySelector('.sideBar').querySelector('.icons-bookno').style.display = 'inline-block';
                     }
                 }else if(type == 'font'){
                     var cmp = stage.querySelector('.checked');
@@ -1096,7 +1280,7 @@
         sizeW.children[1].value = '';
         sizeH.children[1].value = '';
 
-        if(element.getAttribute('data-type') == 'text'){
+        if(element && element.getAttribute('data-type') == 'text'){
             detailBar.children[0].children[1].style.display = 'block';
         }else{
             detailBar.children[0].children[1].style.display = 'none';
