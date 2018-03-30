@@ -303,6 +303,38 @@
     }
 
     /**
+     * 放大缩小
+     */
+    document.querySelector('.magnifier').addEventListener('click', function(e){
+        var element = e.target || e.srcElement;
+        if(element.getAttribute('data-btn')){
+            if(element.getAttribute('data-btn') == 'minus'){
+                var scale = element.nextElementSibling;
+                scale.setAttribute('data-scale', parseInt(scale.getAttribute('data-scale')) - 25 < 100 ? '100' : parseInt(scale.getAttribute('data-scale')) - 25);
+                scale.innerText = scale.getAttribute('data-scale') + '%';
+            }else if(element.getAttribute('data-btn') == 'plus'){
+                var scale = element.previousElementSibling;
+                scale.setAttribute('data-scale', parseInt(scale.getAttribute('data-scale')) + 25 > 200 ? '200' : parseInt(scale.getAttribute('data-scale')) + 25);
+                scale.innerText = scale.getAttribute('data-scale') + '%';
+            }
+            var k = parseFloat(scale.getAttribute('data-scale')) / 100;
+            var stage = document.querySelector('.stage');
+            stage.style.width = 480 * k + 'px';
+            stage.style.height = 750 * k + 'px';
+
+            stage.querySelector('.block-header').style.width = stage.style.width;
+            // stage.querySelector('.block-header').style.height = stage.style.height ;
+            
+            stage.querySelector('.block-body').style.width = stage.style.width;
+            // stage.querySelector('.block-body').style.height = stage.style.height;
+
+            stage.querySelector('.block-bottom').style.width = stage.style.width;
+            // stage.querySelector('.block-bottom').style.height = stage.style.height;
+        }
+        
+    })
+
+    /**
      * 背景模块点击事件
      * colorBg 颜色选择区域
      * imageBg 图片选择区域
