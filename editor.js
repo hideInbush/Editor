@@ -57,11 +57,11 @@
                 };
                 ds.queryPrivateModelAll(obj);
             }else{
-                alert('登陆失败！');
+                // alert('登陆失败！');
             }
         },
         errFunc: function(result){
-            alert('登陆失败！');
+            // alert('登陆失败！');
         }
     };
     ds.login(obj);
