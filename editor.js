@@ -323,13 +323,13 @@
             stage.style.height = 750 * k + 'px';
 
             stage.querySelector('.block-header').style.width = stage.style.width;
-            // stage.querySelector('.block-header').style.height = stage.style.height ;
+            stage.querySelector('.block-header').style.height = 150 * k  + 'px' ;
             
             stage.querySelector('.block-body').style.width = stage.style.width;
-            // stage.querySelector('.block-body').style.height = stage.style.height;
+            stage.querySelector('.block-body').style.height = 450 * k + 'px' ;
 
             stage.querySelector('.block-bottom').style.width = stage.style.width;
-            // stage.querySelector('.block-bottom').style.height = stage.style.height;
+            stage.querySelector('.block-bottom').style.height = 150 * k + 'px' ;
         }
         
     })
