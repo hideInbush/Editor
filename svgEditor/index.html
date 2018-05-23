@@ -88,6 +88,9 @@
             var x = format(e.pageX, e.pageY)[0];
             var y = format(e.pageX, e.pageY)[1];
             rectRanges[0] = findTargetRange(x, y);
+            if(!rectRanges[0]){
+              return;
+            }
             rectDoms[0] = rPath;
             //纠正y为当前范围y1值
             y = rectRanges[0][2];
@@ -127,7 +130,7 @@
                         preRectDom.remove();
                         rectRanges.pop();
                         rectDoms.pop();
-                        preStartX.pop();
+                        startXs.pop();
                     }
                     
                     //判断当前g里面是否已存在同一y下的rect
@@ -165,7 +168,7 @@
                         preRectDom.remove();
                         rectRanges.pop();
                         rectDoms.pop();
-                        preStartX.pop();
+                        startXs.pop();
                     }
                     
                     //判断当前g里面是否已存在同一y下的rect
@@ -195,9 +198,15 @@
             
             document.onmouseup = function(e){
                 svgElement.onmousemove = null;
+                window.rectRanges = [];
+                window.rectDoms = [];
+                window.startXs = [];
             }
             svgElement.onmouseleave = function(e){
                 svgElement.onmousemove = null;
+                window.rectRanges = [];
+                window.rectDoms = [];
+                window.startXs = [];
             }
 
             function findTargetRange(x, y){
