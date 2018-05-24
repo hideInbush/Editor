@@ -120,6 +120,8 @@
                     }
                 }
                 else if(curRect && curRect[2] > preRect[2]){
+                    var lostRect = findLostRange(x, y, 'down');
+                  
                     /**
                      * 向下穿越 newY1 > y1
                      * 上一个矩形尾部闭合 当前矩形头部闭合
@@ -143,6 +145,19 @@
                     }
 
                     if(!rPath){
+                        lostRect.forEach(function(v){
+                          var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
+                          rect.setAttribute('opacity', '0.4');
+                          rect.setAttribute('fill', 'blue');
+                          rect.setAttribute('height', '32');
+                          g.appendChild(rect);
+                          rect.setAttribute('x', v[0]);
+                          rect.setAttribute('y', v[2]);
+                          rect.setAttribute('width', v[1] - v[0]);
+                          rectRanges.push(v);
+                          rectDoms.push(rect);
+                          startXs.push(v[0]);
+                        })
                         rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
                         rPath.setAttribute('opacity', '0.4');
                         rPath.setAttribute('fill', 'blue');
@@ -157,6 +172,7 @@
                     rPath.setAttribute('width', x - curRect[0]);
                 }
                 else if(curRect && curRect[2] < preRect[2]){
+                    var lostRect = findLostRange(x, y, 'up');
                     /**
                      * 向上穿越 newY1 < y1
                      * 上一个矩形头部闭合 当前矩形尾部闭合
@@ -181,6 +197,19 @@
                     }
 
                     if(!rPath){
+                        lostRect.forEach(function(v){
+                          var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
+                          rect.setAttribute('opacity', '0.4');
+                          rect.setAttribute('fill', 'blue');
+                          rect.setAttribute('height', '32');
+                          g.appendChild(rect);
+                          rect.setAttribute('x', v[0]);
+                          rect.setAttribute('y', v[2]);
+                          rect.setAttribute('width', v[1] - v[0]);
+                          rectRanges.push(v);
+                          rectDoms.push(rect);
+                          startXs.push(v[0]);
+                        })
                         rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
                         rPath.setAttribute('opacity', '0.4');
                         rPath.setAttribute('fill', 'blue');
@@ -210,18 +239,49 @@
             }
 
             function findTargetRange(x, y){
-                for(var i=0; i<rangeArr.length; i++){
-                    var range = rangeArr[i];
-                    var x1 = range[0];
-                    var x2 = range[1];
-                    var y1 = range[2];
-                    var y2 = range[3];
-                    if(y >= y1 && y <= y2 && x >= x1 && x<= x2){
-                        //i got u
-                        return range;
-                    }
+              for(var i=0; i<rangeArr.length; i++){
+                  var range = rangeArr[i];
+                  var x1 = range[0];
+                  var x2 = range[1];
+                  var y1 = range[2];
+                  var y2 = range[3];
+                  if(y >= y1 && y <= y2 && x >= x1 && x<= x2){
+                      //i got u
+                      return range;
+                  }
+              }
+              return undefined;
+            }
+
+            function findLostRange(x, y, direction){
+              var lostArr = [];
+              //上一个
+              var lastRect = rectRanges.slice().pop();
+
+              var startIndex;
+              var endIndex;
+              for(var i=0; i<rangeArr.length; i++){
+                var range = rangeArr[i];
+                var x1 = range[0];
+                var x2 = range[1];
+                var y1 = range[2];
+                var y2 = range[3];
+                if(lastRect == range){
+                  startIndex = i;
                 }
-                return undefined;
+                if(y >= y1 && y <= y2 && x >= x1 && x<= x2){
+                  endIndex = i;
+                }
+              }
+
+              if(Math.abs(endIndex - startIndex) > 1){
+                if(direction == 'down'){
+                  lostArr = rangeArr.splice(startIndex + 1, endIndex - startIndex - 1);
+                }else if(direction == 'up'){
+                  lostArr = rangeArr.splice(endIndex + 1, startIndex - endIndex - 1).reverse();
+                }
+              }
+              return lostArr;
             }
         }
     })();
