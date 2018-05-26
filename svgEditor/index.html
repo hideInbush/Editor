@@ -59,23 +59,24 @@
         /**
          * @param rangeArr[[x1x2y1y2]]
          */
-        var rangeArr = [];
+        window.rangeArr = [];
         _svgJson["pos"].forEach(function(v){
             rangeArr.push([parseFloat(v.x), parseFloat(v.x)+ parseFloat(v.w), parseFloat(v.y), parseFloat(v.y)+parseFloat(v.h)]);
         })
-        window.points = {};
         let surfaceG = $("g[id^='surface']")[0];
         window.curCTM = this.calcCTM(surfaceG);
 
         var paths = document.createElementNS('http://www.w3.org/2000/svg',"g");
         svgElement.insertBefore(paths, rects);
 
-        //矩形框范围
+        //已画矩形框范围
         window.rectRanges = [];
-        //矩形框节点
+        //已画矩形框节点
         window.rectDoms = [];
         //开始的x
         window.startXs = [];
+        //last turn
+        window.turns = [];
         svgElement.onmousedown = function(e){
             var g = document.createElementNS('http://www.w3.org/2000/svg',"g");
             paths.appendChild(g);
@@ -93,12 +94,12 @@
             }
             rectDoms[0] = rPath;
             //纠正y为当前范围y1值
-            y = rectRanges[0][2];
+            y = parseFloat(rectRanges[0][2]);
             rPath.setAttribute('x', x);
             rPath.setAttribute('y', y);
 
             //记录mouse起始位置
-            startXs[0] = rPath.getAttribute('x');
+            startXs[0] = parseFloat(rPath.getAttribute('x'));
             svgElement.onmousemove = function(e){
                 var x = format(e.pageX, e.pageY)[0];
                 var y = format(e.pageX, e.pageY)[1];
@@ -120,108 +121,154 @@
                     }
                 }
                 else if(curRect && curRect[2] > preRect[2]){
-                    var lostRect = findLostRange(x, y, 'down');
-                  
                     /**
                      * 向下穿越 newY1 > y1
-                     * 上一个矩形尾部闭合 当前矩形头部闭合
+                     * 
                      */
-                    preRectDom.setAttribute('x', preStartX);
-                    preRectDom.setAttribute('width', preRect[1] - preStartX);
-                    if(preRect[1] - preStartX == 0){
-                        preRectDom.remove();
-                        rectRanges.pop();
-                        rectDoms.pop();
-                        startXs.pop();
-                    }
-                    
-                    //判断当前g里面是否已存在同一y下的rect
-                    var rPath;
-                    for(var i=0; i<rectRanges.length; i++){
-                        if(rectRanges[i] == curRect){
-                            rPath = rectDoms[i];
-                            break;
-                        }
-                    }
 
-                    if(!rPath){
-                        lostRect.forEach(function(v){
-                          var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                          rect.setAttribute('opacity', '0.4');
-                          rect.setAttribute('fill', 'blue');
-                          rect.setAttribute('height', '32');
-                          g.appendChild(rect);
-                          rect.setAttribute('x', v[0]);
-                          rect.setAttribute('y', v[2]);
-                          rect.setAttribute('width', v[1] - v[0]);
-                          rectRanges.push(v);
-                          rectDoms.push(rect);
-                          startXs.push(v[0]);
-                        })
-                        rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                        rPath.setAttribute('opacity', '0.4');
-                        rPath.setAttribute('fill', 'blue');
-                        rPath.setAttribute('height', '32');
-                        g.appendChild(rPath);
-                        rPath.setAttribute('x', curRect[0]);
-                        rPath.setAttribute('y', curRect[2]);
-                        rectRanges.push(curRect);
-                        rectDoms.push(rPath);
-                        startXs.push(curRect[0]);
+                    if(turns.slice().pop() == 'up'){
+                        //turn back
+                        //上部矩形框 全部删除 当前矩形自x处尾部闭合
+                        for(var i=0; i<rectRanges.length; i++){
+                            if(y >= rectRanges[i][2] && y<= rectRanges[i][3]){
+                                rectRanges.splice(i+1, rectRanges.length);
+                                var deleteDoms = rectDoms.splice(i+1, rectDoms.length);
+                                deleteDoms.forEach(function(v){
+                                    v.remove();
+                                });
+                                startXs.splice(i+1, startXs.length);
+
+                                var curDom = rectDoms[i];
+                                curDom.setAttribute('x', x);
+                                curDom.setAttribute('width', curRect[1] - x);
+                                break;
+                            }
+                        }
+                    }else{
+                        //上一个矩形尾部闭合 当前矩形头部闭合
+                        var lostRect = findLostRange(x, y, 'down');
+                        preRectDom.setAttribute('x', preStartX);
+                        preRectDom.setAttribute('width', preRect[1] - preStartX);
+                        if(preRect[1] - preStartX == 0){
+                            preRectDom.remove();
+                            rectRanges.pop();
+                            rectDoms.pop();
+                            startXs.pop();
+                        }
+                        
+                        //判断当前g里面是否已存在同一y下的rect
+                        var rPath;
+                        for(var i=0; i<rectRanges.length; i++){
+                            if(rectRanges[i] == curRect){
+                                rPath = rectDoms[i];
+                                break;
+                            }
+                        }
+
+                        if(!rPath){
+                            lostRect.forEach(function(v){
+                            var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
+                            rect.setAttribute('opacity', '0.4');
+                            rect.setAttribute('fill', 'blue');
+                            rect.setAttribute('height', '32');
+                            g.appendChild(rect);
+                            rect.setAttribute('x', v[0]);
+                            rect.setAttribute('y', v[2]);
+                            rect.setAttribute('width', v[1] - v[0]);
+                            rectRanges.push(v);
+                            rectDoms.push(rect);
+                            startXs.push(v[0]);
+                            })
+                            rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
+                            rPath.setAttribute('opacity', '0.4');
+                            rPath.setAttribute('fill', 'blue');
+                            rPath.setAttribute('height', '32');
+                            g.appendChild(rPath);
+                            rPath.setAttribute('x', curRect[0]);
+                            rPath.setAttribute('y', curRect[2]);
+                            rectRanges.push(curRect);
+                            rectDoms.push(rPath);
+                            startXs.push(curRect[0]);
+                        }
+                        rPath.setAttribute('width', x - curRect[0]);
+
+                        window.turns.push("down");
                     }
-                    rPath.setAttribute('width', x - curRect[0]);
                 }
                 else if(curRect && curRect[2] < preRect[2]){
-                    var lostRect = findLostRange(x, y, 'up');
-                    /**
-                     * 向上穿越 newY1 < y1
-                     * 上一个矩形头部闭合 当前矩形尾部闭合
-                     */
-                    preRectDom.setAttribute('x', preRect[0]);
-                    preRectDom.setAttribute('width', preStartX - preRect[0]);
-                    
-                    if(preStartX - preRect[0] == 0){
-                        preRectDom.remove();
-                        rectRanges.pop();
-                        rectDoms.pop();
-                        startXs.pop();
-                    }
-                    
-                    //判断当前g里面是否已存在同一y下的rect
-                    var rPath;
-                    for(var i=0; i<rectRanges.length; i++){
-                        if(rectRanges[i] == curRect){
-                            rPath = rectDoms[i];
-                            break;
-                        }
-                    }
+                    if(turns.slice().pop() == 'down'){
+                        //turn back
+                        //下部矩形框 全部删除 当前矩形自x处头部闭合
+                        for(var i=0; i<rectRanges.length; i++){
+                            if(y >= rectRanges[i][2] && y<= rectRanges[i][3]){
+                                rectRanges.splice(i+1, rectRanges.length);
+                                var deleteDoms = rectDoms.splice(i+1, rectDoms.length);
+                                deleteDoms.forEach(function(v){
+                                    v.remove();
+                                });
+                                startXs.splice(i+1, startXs.length);
 
-                    if(!rPath){
-                        lostRect.forEach(function(v){
-                          var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                          rect.setAttribute('opacity', '0.4');
-                          rect.setAttribute('fill', 'blue');
-                          rect.setAttribute('height', '32');
-                          g.appendChild(rect);
-                          rect.setAttribute('x', v[0]);
-                          rect.setAttribute('y', v[2]);
-                          rect.setAttribute('width', v[1] - v[0]);
-                          rectRanges.push(v);
-                          rectDoms.push(rect);
-                          startXs.push(v[0]);
-                        })
-                        rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                        rPath.setAttribute('opacity', '0.4');
-                        rPath.setAttribute('fill', 'blue');
-                        rPath.setAttribute('height', '32');
-                        g.appendChild(rPath);
-                        rPath.setAttribute('x', x);
-                        rPath.setAttribute('y', curRect[2]);
-                        rectRanges.push(curRect);
-                        rectDoms.push(rPath);
-                        startXs.push(curRect[1]);
+                                var curDom = rectDoms[i];
+                                curDom.setAttribute('x', curRect[0]);
+                                curDom.setAttribute('width', x - curRect[0]);
+                                break;
+                            }
+                        }
+                        
+                    }else{
+                        var lostRect = findLostRange(x, y, 'up');
+                        /**
+                        * 向上穿越 newY1 < y1
+                        * 上一个矩形头部闭合 当前矩形尾部闭合
+                        */
+                        preRectDom.setAttribute('x', preRect[0]);
+                        preRectDom.setAttribute('width', preStartX - preRect[0]);
+                        
+                        if(preStartX - preRect[0] == 0){
+                            preRectDom.remove();
+                            rectRanges.pop();
+                            rectDoms.pop();
+                            startXs.pop();
+                        }
+                        
+                        //判断当前g里面是否已存在同一y下的rect
+                        var rPath;
+                        for(var i=0; i<rectRanges.length; i++){
+                            if(rectRanges[i] == curRect){
+                                rPath = rectDoms[i];
+                                break;
+                            }
+                        }
+
+                        if(!rPath){
+                            lostRect.forEach(function(v){
+                            var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
+                            rect.setAttribute('opacity', '0.4');
+                            rect.setAttribute('fill', 'blue');
+                            rect.setAttribute('height', '32');
+                            g.appendChild(rect);
+                            rect.setAttribute('x', v[0]);
+                            rect.setAttribute('y', v[2]);
+                            rect.setAttribute('width', v[1] - v[0]);
+                            rectRanges.push(v);
+                            rectDoms.push(rect);
+                            startXs.push(v[0]);
+                            })
+                            rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
+                            rPath.setAttribute('opacity', '0.4');
+                            rPath.setAttribute('fill', 'blue');
+                            rPath.setAttribute('height', '32');
+                            g.appendChild(rPath);
+                            rPath.setAttribute('x', x);
+                            rPath.setAttribute('y', curRect[2]);
+                            rectRanges.push(curRect);
+                            rectDoms.push(rPath);
+                            startXs.push(curRect[1]);
+                        }
+                        rPath.setAttribute('width', curRect[1] - x);
+
+                        window.turns.push("up");
                     }
-                    rPath.setAttribute('width', curRect[1] - x);
                 }
             }   
             
@@ -230,12 +277,14 @@
                 window.rectRanges = [];
                 window.rectDoms = [];
                 window.startXs = [];
+                window.turns = [];
             }
             svgElement.onmouseleave = function(e){
                 svgElement.onmousemove = null;
                 window.rectRanges = [];
                 window.rectDoms = [];
                 window.startXs = [];
+                window.turns = [];
             }
 
             function findTargetRange(x, y){
@@ -269,16 +318,16 @@
                 if(lastRect == range){
                   startIndex = i;
                 }
-                if(y >= y1 && y <= y2 && x >= x1 && x<= x2){
+                if(y >= y1 && y <= y2 && x >= x1 && x <= x2){
                   endIndex = i;
                 }
               }
 
               if(Math.abs(endIndex - startIndex) > 1){
                 if(direction == 'down'){
-                  lostArr = rangeArr.splice(startIndex + 1, endIndex - startIndex - 1);
+                  lostArr = rangeArr.slice().splice(startIndex + 1, endIndex - startIndex - 1);
                 }else if(direction == 'up'){
-                  lostArr = rangeArr.splice(endIndex + 1, startIndex - endIndex - 1).reverse();
+                  lostArr = rangeArr.slice().splice(endIndex + 1, startIndex - endIndex - 1).reverse();
                 }
               }
               return lostArr;
