@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>富媒体交互</title>
+    <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
     <div id="container"></div>
@@ -67,8 +68,14 @@
         window.curCTM = this.calcCTM(surfaceG);
 
         var paths = document.createElementNS('http://www.w3.org/2000/svg',"g");
+        paths.setAttribute('opacity', '0.4');
         svgElement.insertBefore(paths, rects);
 
+        //已画矩形的范围 数据不清楚
+        window.allDoneRanges = [];
+        window.allDoneRangeDoms = [];
+
+        window.curPontInDom;
         //已画矩形框范围
         window.rectRanges = [];
         //已画矩形框节点
@@ -78,16 +85,28 @@
         //last turn
         window.turns = [];
         svgElement.onmousedown = function(e){
+            //判断当前点击区域 是否存在已画线
+            var x = format(e.pageX, e.pageY)[0];
+            var y = format(e.pageX, e.pageY)[1];
+
+            var targetDoms = curPointIfLine(x, y) || [];
+            curPontInDom = targetDoms;
+            if(targetDoms.length > 0){
+                targetDoms.forEach(function(v){
+                    v.setAttribute('class', 'rect-selected');
+                })
+            }else{
+                $('.rect-selected').removeClass('rect-selected');
+            }
+
             var g = document.createElementNS('http://www.w3.org/2000/svg',"g");
             paths.appendChild(g);
             var rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-            rPath.setAttribute('opacity', '0.4');
+            rPath.setAttribute('opacity', '1');
             rPath.setAttribute('fill', 'blue');
             rPath.setAttribute('height', '32');
             g.appendChild(rPath);
             
-            var x = format(e.pageX, e.pageY)[0];
-            var y = format(e.pageX, e.pageY)[1];
             rectRanges[0] = findTargetRange(x, y);
             if(!rectRanges[0]){
               return;
@@ -101,6 +120,8 @@
             //记录mouse起始位置
             startXs[0] = parseFloat(rPath.getAttribute('x'));
             svgElement.onmousemove = function(e){
+                $('.rect-selected').removeClass('rect-selected');
+
                 var x = format(e.pageX, e.pageY)[0];
                 var y = format(e.pageX, e.pageY)[1];
 
@@ -108,6 +129,8 @@
                 var preRectDom = rectDoms.slice().pop();
                 var preStartX = startXs.slice().pop();
                 var curRect = findTargetRange(x, y);
+
+
                 if(curRect && curRect == preRect){
                     /**
                      * 水平划线
@@ -168,7 +191,7 @@
                         if(!rPath){
                             lostRect.forEach(function(v){
                             var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                            rect.setAttribute('opacity', '0.4');
+                            rect.setAttribute('opacity', '1');
                             rect.setAttribute('fill', 'blue');
                             rect.setAttribute('height', '32');
                             g.appendChild(rect);
@@ -180,7 +203,7 @@
                             startXs.push(v[0]);
                             })
                             rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                            rPath.setAttribute('opacity', '0.4');
+                            rPath.setAttribute('opacity', '1');
                             rPath.setAttribute('fill', 'blue');
                             rPath.setAttribute('height', '32');
                             g.appendChild(rPath);
@@ -243,7 +266,7 @@
                         if(!rPath){
                             lostRect.forEach(function(v){
                             var rect = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                            rect.setAttribute('opacity', '0.4');
+                            rect.setAttribute('opacity', '1');
                             rect.setAttribute('fill', 'blue');
                             rect.setAttribute('height', '32');
                             g.appendChild(rect);
@@ -255,7 +278,7 @@
                             startXs.push(v[0]);
                             })
                             rPath = document.createElementNS('http://www.w3.org/2000/svg',"rect");
-                            rPath.setAttribute('opacity', '0.4');
+                            rPath.setAttribute('opacity', '1');
                             rPath.setAttribute('fill', 'blue');
                             rPath.setAttribute('height', '32');
                             g.appendChild(rPath);
@@ -273,18 +296,26 @@
             }   
             
             document.onmouseup = function(e){
+                window.allDoneRanges.push(window.rectRanges);
+                window.allDoneRangeDoms.push(window.rectDoms);
+
                 svgElement.onmousemove = null;
                 window.rectRanges = [];
                 window.rectDoms = [];
                 window.startXs = [];
                 window.turns = [];
+                window.curPontInDom = undefined;
             }
             svgElement.onmouseleave = function(e){
+                window.allDoneRanges.push(window.rectRanges);
+                window.allDoneRangeDoms.push(window.rectDoms);
+
                 svgElement.onmousemove = null;
                 window.rectRanges = [];
                 window.rectDoms = [];
                 window.startXs = [];
                 window.turns = [];
+                window.curPontInDom = undefined;
             }
 
             function findTargetRange(x, y){
@@ -331,6 +362,70 @@
                 }
               }
               return lostArr;
+            }
+            
+            function curPointIfLine(x, y){
+                var ranges = allDoneRanges.slice();
+                var doms = allDoneRangeDoms.slice();
+
+                if(ranges.length == 0){
+                    return [];
+                }
+
+                for(var i=0; i<ranges.length; i++){
+                    for(var j=0; j<ranges[i].length; j++){
+                        var x1 = ranges[i][j][0];
+                        var x2 = ranges[i][j][1];
+                        var y1 = ranges[i][j][2];
+                        var y2 = ranges[i][j][3];
+                        
+                        if(x >= x1 && x <= x2 && y >= y1 && y <= y2){
+                            return doms[i];
+                        }
+                    }
+                }
+                return [];
+            }
+            
+            function getSpecificRange(x1, y1, x2, y2){
+
+            }
+
+            function mixLines(){
+                //线公有部分合并
+                var oldRanges = window.allDoneRanges.slice();
+                var newRanges = window.rectRanges.slice();
+                var headX1 = newRanges[0][0];
+                var footX2 = newRanges.slice().pop()[1];
+                var headY1 = newRanges[0][3];
+                var footY2 = newRanges.slice().pop()[3];
+
+                for(var i=0; i<oldRanges.length; i++){
+                    var ranges = oldRanges[i];
+                    var oldHeadX1 = ranges[0][0];
+                    var oldHeadX2 = range.slice().pop()[3];
+                    var oldFootY1 = ranges[0][3];
+                    var oldFootY2 = ranges.slice().pop()[3];
+
+                    if(headY1 < oldFootY1){
+                        //headY1
+                        if(footY2 >= oldFootY1 && footY2 <= oldFootY2){
+                            //oldFootY2
+                            var r = getSpecificRange();
+                        }else if(footY2 > oldFootY2){
+                            //footY2
+                        }
+                    }else if(headY1 >=  oldFootY1 && headY1 <= oldFootY2){
+                        //oldFootY1
+                        if(footY2 >= oldFootY1 && footY2 <= oldFootY2){
+                            //oldFootY2
+                        }else if(footY2 > oldFootY2){
+                            //footY2
+                        }
+                    }else if(headY1 > oldFootY2){
+                        continue;
+                    }
+                }
             }
         }
     })();
