@@ -89,6 +89,7 @@
             var x = format(e.pageX, e.pageY)[0];
             var y = format(e.pageX, e.pageY)[1];
 
+            $('.rect-selected').removeClass('rect-selected');
             var targetDoms = curPointIfLine(x, y) || [];
             curPontInDom = targetDoms;
             if(targetDoms.length > 0){
@@ -149,7 +150,7 @@
                      * 
                      */
 
-                    if(turns.slice().pop() == 'up'){
+                    if(turns.slice().pop() == 'up' && rectRanges.length > 1){
                         //turn back
                         //上部矩形框 全部删除 当前矩形自x处尾部闭合
                         for(var i=0; i<rectRanges.length; i++){
@@ -167,7 +168,8 @@
                                 break;
                             }
                         }
-                    }else{
+                    }
+                    else{
                         //上一个矩形尾部闭合 当前矩形头部闭合
                         var lostRect = findLostRange(x, y, 'down');
                         preRectDom.setAttribute('x', preStartX);
@@ -219,7 +221,7 @@
                     }
                 }
                 else if(curRect && curRect[2] < preRect[2]){
-                    if(turns.slice().pop() == 'down'){
+                    if(turns.slice().pop() == 'down' && rectRanges.length > 1){
                         //turn back
                         //下部矩形框 全部删除 当前矩形自x处头部闭合
                         for(var i=0; i<rectRanges.length; i++){
@@ -237,8 +239,8 @@
                                 break;
                             }
                         }
-                        
-                    }else{
+                    }
+                    else{
                         var lostRect = findLostRange(x, y, 'up');
                         /**
                         * 向上穿越 newY1 < y1
@@ -296,8 +298,10 @@
             }   
             
             document.onmouseup = function(e){
-                window.allDoneRanges.push(window.rectRanges);
-                window.allDoneRangeDoms.push(window.rectDoms);
+                if(window.rectRanges.length > 1){
+                    window.allDoneRanges.push(window.rectRanges);
+                    window.allDoneRangeDoms.push(window.rectDoms);
+                }
 
                 svgElement.onmousemove = null;
                 window.rectRanges = [];
